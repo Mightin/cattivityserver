@@ -10,20 +10,21 @@ router.get('/', function(req, res, next) {
 
 /* POST home page. */
 router.post('/', function(req, res, next) {
-    console.log('Request  successfully!');
-
-    var fingerprint = new Fingerprint({
-        place: req.body.place,
-        value: req.body.value,
-        phoneID: req.body.phoneID
-    });
-    console.log('fingerprint var made successfully!');
-
-    fingerprint.save(function(err) {
-        if (err) throw err;
-        console.log('User saved successfully!');
-        res.send('POST request to the homepage');
-        console.log('Res send successfully!');
-    });
+    if(req.body.hasOwnProperty('place') && req.body.hasOwnProperty('value') && req.body.hasOwnProperty('phoneID') ){
+        console.log(typeof req.body.place + typeof req.body.value + typeof req.body.phoneID);
+        var fingerprint = new Fingerprint({
+            place: req.body.place,
+            value: req.body.value,
+            phoneID: req.body.phoneID
+        });
+        fingerprint.save(function(err) {
+            if (err) throw err;
+            res.send('POST request to the homepage successful');
+        });
+        console.log('POST was successful!');
+    } else {
+        res.send('POST request to the homepage not successful');
+        console.log('POST was not successful!');
+    }
 });
 module.exports = router;

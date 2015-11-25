@@ -2,13 +2,20 @@
 <html>
 <head>
     <title>Cattivity</title>
-    <% include ../partials/header %>
+    <link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="javascripts/floorplan.js"></script>
 </head>
 <body>
-<div class="container">
+<% include ../partials/header %>
+
+<div class="container" onload="placeDots()">
     <div class="jumbotron">
         <h1>Fingerprint</h1>
-        <p>This is a map of the points in the apartment which we have fingerprinted. Clicking on a point shows the RSSI-values for the 3 beacons.</p>
+        <p id="las">This is a map of the points in the apartment which we have fingerprinted. Clicking on a point shows the RSSI-values for the 3 beacons.</p>
+
+        <div id="floorplan-div" style="position: relative; left: 0; top: 0;">
+            <img class="floorplan" src="images/floorplan.png" onload="placeDots()">
+        </div>
     </div>
 </div>
 </body>
