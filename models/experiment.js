@@ -4,16 +4,15 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // create a schema
-var fingerprintSchema = new Schema({
-    place: String,
-    values: [Number],
-    avg: Number,
+var experimentSchema = new Schema({
+    value: Number,
+    time: Date,
     phoneID: String
 });
 
 // the schema is useless so far
 // we need to create a model using it
-var fingerprint = mongoose.model('fingerprint', fingerprintSchema);
+var experiment = mongoose.model('experiment', experimentSchema);
 
 // make this available to our users in our Node applications
-module.exports = fingerprint;
+module.exports = experiment;
