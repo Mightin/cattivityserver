@@ -5,9 +5,22 @@ var check = require("check-type").init();
 
 var Fingerprint = require('../models/fingerprint');
 
+var phones = [
+    {place: "Kitchen", id: 1, x: 230, y: 175},
+    {place: "Livingroom", id: 2, x: 700, y: 80},
+    {place: "Bedroom", id: 3, x: 560, y: 530}
+];
+
+var locations = [
+    {place: "Livingroom", x: 500, y: 100, values: [-45, -99, -30]},
+    {place: "Bathroom", x: 300, y: 400, values: [-45, -99, -30]},
+    {place: "Kitchen", x: 200, y: 200, values: [-45, -99, -30]}
+];
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('pages/fingerprint', { title: 'About' });
+    res.render('pages/fingerprint', {dots: { phones: phones, locations: locations }});
 });
 
 /* POST home page. */

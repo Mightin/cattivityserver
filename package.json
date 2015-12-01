@@ -1,5 +1,5 @@
 {
-  "name": "untitled",
+  "name": "Cattivity",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
     "debug": "~2.2.0",
     "ejs": "~2.3.3",
     "express": "~4.13.1",
+    "grunt": "~0.4.5",
     "kerberos": "~0.0.17",
     "method-override" : "~2.0.2",
     "mongoose": "~4.2.6",
