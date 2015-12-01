@@ -1,3 +1,7 @@
-FROM node:4-onbuild
-# replace this with your application's default port
-EXPOSE 8080
+FROM nodesource/node:4.0
+
+ADD package.json package.json
+RUN npm install
+ADD . .
+
+CMD ["node","./bin/wwww"]
