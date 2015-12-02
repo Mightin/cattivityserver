@@ -12,9 +12,36 @@ var phones = [
 ];
 
 var locations = [
-    {place: "Livingroom", x: 500, y: 100, values: [-45, -99, -30]},
-    {place: "Bathroom", x: 300, y: 400, values: [-45, -99, -30]},
-    {place: "Kitchen", x: 200, y: 200, values: [-45, -99, -30]}
+    {place: "Food Bowl", id: 1, x: 64, y: 106, values: [1, 2, 3]},
+    {place: "Kitchen Hood", id: 2, x: 208, y: 198, values: [1, 2, 3]},
+    {place: "Kitchen Table", id: 3, x: 58, y: 286, values: [1, 2, 3]},
+    {place: "Kitchen Shelves", id: 4, x: 66, y: 350, values: [1, 2, 3]},
+    {place: "Kitchen Closet", id: 5, x: 218, y: 344, values: [1, 2, 3]},
+    {place: "Bathroom Litterbox", id: 6, x: 328, y: 182, values: [1, 2, 3]},
+    {place: "Bathroom Sink", id: 7, x: 420, y: 106, values: [1, 2, 3]},
+    {place: "Hall, By Shoes", id: 29, x: 292, y: 358, values: [1, 2, 3]},
+    {place: "Hall Door", id: 8, x: 376, y: 342, values: [1, 2, 3]},
+    {place: "Hall, By Livingroom", id: 9, x: 420, y: 282, values: [1, 2, 3]},
+    {place: "Sofa (Left Top)", id: 10, x: 474, y: 64, values: [1, 2, 3]},
+    {place: "Sofa (Middle Top)", id: 11, x: 542, y: 62, values: [1, 2, 3]},
+    {place: "Sofa (Right Top)", id: 12, x: 614, y: 66, values: [1, 2, 3]},
+    {place: "Sofa (Right Middle)", id: 13, x: 614, y: 122, values: [1, 2, 3]},
+    {place: "Sofa (Right Bottom)", id: 14, x: 614, y: 186, values: [1, 2, 3]},
+    {place: "Computer", id: 15, x: 696, y: 76, values: [1, 2, 3]},
+    {place: "Printer", id: 16, x: 764, y: 94, values: [1, 2, 3]},
+    {place: "Cupboard (Left)", id: 17, x: 660, y: 316, values: [1, 2, 3]},
+    {place: "Cupboard (Top)", id: 18, x: 712, y: 318, values: [1, 2, 3]},
+    {place: "Cupboard (Right)", id: 19, x: 742, y: 346, values: [1, 2, 3]},
+    {place: "Terrace, Computer Chair", id: 20, x: 846, y: 80, values: [1, 2, 3]},
+    {place: "Terrace, Chair (Top)", id: 21, x: 874, y: 176, values: [1, 2, 3]},
+    {place: "Terrace, Chair (Bottom)", id: 22, x: 944, y: 206, values: [1, 2, 3]},
+    {place: "Bedroom, Cupboard", id: 23, x: 502, y: 398, values: [1, 2, 3]},
+    {place: "Bedroom, Bed (Top Left)", id: 24, x: 650, y: 448, values: [1, 2, 3]},
+    {place: "Bedroom, Bed (Bottom Left)", id: 25, x: 650, y: 502, values: [1, 2, 3]},
+    {place: "Bedroom, Bed (Middle Right)", id: 26, x: 736, y: 474, values: [1, 2, 3]},
+    {place: "Bedroom, Night Table", id: 27, x: 800, y: 400, values: [1, 2, 3]},
+    {place: "Bedroom, Windowsill", id: 28, x: 816, y: 458, values: [1, 2, 3]},
+    {place: "Bedroom, Closet", id: 30, x: 464, y: 520, values: [1, 2, 3]}
 ];
 
 

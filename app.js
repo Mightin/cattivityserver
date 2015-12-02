@@ -15,7 +15,8 @@ var app = express();
 
 // database set up
 var mongoose = require('mongoose');
-var uri = 'mongodb://db0/cattivity';
+//var uri = 'mongodb://localhost/cattivity';
+var uri = process.env.MONGO_PATH;
 mongoose.connect(uri);
 
 // view engine setup
