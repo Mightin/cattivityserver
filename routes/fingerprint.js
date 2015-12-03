@@ -1,5 +1,7 @@
 var express = require('express');
 var d3 = require('d3');
+var async = require('async');
+
 var router = express.Router();
 var check = require("check-type").init();
 
@@ -44,32 +46,37 @@ var locations = [
     {place: "Bedroom, Closet", id: 30, x: 464, y: 520, values: [1, 2, 3]}
 ];
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('pages/fingerprint', {dots: { phones: phones, locations: locations }});
+    var newLocations = locations;
+    async.forEachOf(locations, function(location, placeID, callback) {
+        Fingerprint.findOne({"placeID": location.id}, function(err, element) {
+            if (err) return callback(err);
+            if(element != null) {
+                var values = element.values;
+                newLocations[placeID].values = values;
+                console.log(location.id + " has values " + values);
+                return callback();
+            } else {
+                newLocations[placeID].values = [0, 0, 0];
+                console.log(location.id + " was unknown");
+                return callback();
+            }
+        });
+    }, function (err) {
+        if (err) throw err;
+        console.log("When is this printed?????");
+        locations = newLocations;
+        res.render('pages/fingerprint', {dots: { phones: phones, locations: locations }});
+    });
 });
 
 /* POST home page. */
 router.post('/', function(req, res, next) {
-    if(req.body.hasOwnProperty('place') && req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') &&
-        check(req.body.place).is("string") && check(req.body.values).is("array") && check(req.body.phoneID).is("string")){
+    if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('placeID') &&
+       check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.placeID).is("number") ){
 
-        var avg = d3.mean(req.body.values);
-
-        var newFingerprint = Fingerprint({
-            place: req.body.place,
-            values: req.body.values,
-            phoneID: req.body.phoneID,
-            avg: avg
-        });
-
-        newFingerprint.save(function(err) {
-            if (err) throw err;
-            res.status(200);
-            res.send('POST request to the homepage successful');
-            console.log('Saving fingerprint was successful!');
-        });
+        postFingerprint(req, res);
 
     } else {
         res.status(400);
@@ -77,4 +84,41 @@ router.post('/', function(req, res, next) {
         console.log('POST was not successful!');
     }
 });
+
+function postFingerprint(req, res){
+    Fingerprint.findOne({"placeID": req.body.placeID}, function(err, element) {
+        if(err) throw err;
+        var avg = d3.mean(req.body.values);
+
+        // Element already exists
+        if(element != null){
+            var newVals = element.values;
+            newVals[req.body.phoneID - 1] = avg;
+            Fingerprint.findOneAndUpdate({"placeID": req.body.placeID},
+                {"values": newVals},
+                function (err, element) {
+                    if (err) throw err;
+                    res.status(200);
+                    res.send('POST request to the homepage successful');
+                    console.log('Update of fingerprint was successful!');
+                });
+        } else {
+            var newVals = [0, 0, 0];
+            newVals[req.body.phoneID - 1] = avg;
+            var newFingerprint = Fingerprint({
+                placeID: req.body.placeID,
+                values: newVals,
+                phoneID: req.body.phoneID
+            });
+
+            newFingerprint.save(function (err) {
+                if (err) throw err;
+                res.status(200);
+                res.send('POST request to the homepage successful');
+                console.log('Saving fingerprint was successful!');
+            });
+        }
+    })
+}
+
 module.exports = router;

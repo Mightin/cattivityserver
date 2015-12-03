@@ -2,12 +2,25 @@
 
 module.exports = function(grunt){
 
-    // just for testing
-    grunt.registerTask('test_grunt', function(){
-        console.log("I'm speaking");
+    // Configurable paths
+    var config = {
+        app: 'app',
+        dist: 'dist'
+    };
+
+    grunt.initConfig({
+        // Project settings
+        config: config,
+        pkg: grunt.file.readJSON("package.json"),
+
+        watch: {
+            files: ['**/*'],
+            tasks: ['jshint']
+        },
+        gruntfile: {
+            files: ['Gruntfile.js']
+        }
     });
-
-
 
 };
 

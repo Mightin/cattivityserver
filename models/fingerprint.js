@@ -5,10 +5,8 @@ var Schema = mongoose.Schema;
 
 // create a schema
 var fingerprintSchema = new Schema({
-    place: String,
-    values: [Number],
-    avg: Number,
-    phoneID: String
+    placeID: Number,
+    values: [Number]
 });
 
 // the schema is useless so far
