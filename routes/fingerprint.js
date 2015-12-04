@@ -32,11 +32,11 @@ var locations = [
     {place: "Computer", id: 15, x: 696, y: 76, values: [1, 2, 3]},
     {place: "Printer", id: 16, x: 764, y: 94, values: [1, 2, 3]},
     {place: "Cupboard (Left)", id: 17, x: 660, y: 316, values: [1, 2, 3]},
-    {place: "Cupboard (Top)", id: 18, x: 712, y: 318, values: [1, 2, 3]},
+    {place: "Living room", id: 18, x: 542, y: 318, values: [1, 2, 3]},
     {place: "Cupboard (Right)", id: 19, x: 742, y: 346, values: [1, 2, 3]},
     {place: "Terrace, Computer Chair", id: 20, x: 846, y: 80, values: [1, 2, 3]},
     {place: "Terrace, Chair (Top)", id: 21, x: 874, y: 176, values: [1, 2, 3]},
-    {place: "Terrace, Chair (Bottom)", id: 22, x: 944, y: 206, values: [1, 2, 3]},
+    {place: "Terrace, play", id: 22, x: 944, y: 318, values: [1, 2, 3]},
     {place: "Bedroom, Cupboard", id: 23, x: 502, y: 398, values: [1, 2, 3]},
     {place: "Bedroom, Bed (Top Left)", id: 24, x: 650, y: 448, values: [1, 2, 3]},
     {place: "Bedroom, Bed (Bottom Left)", id: 25, x: 650, y: 502, values: [1, 2, 3]},
@@ -73,6 +73,8 @@ router.get('/', function(req, res, next) {
 
 /* POST home page. */
 router.post('/', function(req, res, next) {
+    console.log(JSON.stringify(req.headers));
+    console.log(req.body);
     if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('placeID') &&
        check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.placeID).is("number") ){
 
