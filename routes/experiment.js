@@ -74,11 +74,11 @@ function Queue(){
         return (queue.length == 0);
     };
 
-    this.push = function(item){
+    this.enqueue = function(item){
         queue.push(item);
     };
 
-    this.pop = function(){
+    this.dequeue = function(){
         if (queue.length == 0) return undefined;
 
         var item = queue[offset];
@@ -93,19 +93,13 @@ function Queue(){
         return item;
     };
 
-    /* Returns the item at the front of the queue (without dequeuing it). If the
-     * queue is empty then undefined is returned.
-     */
+    // return the item at the specified position
     this.lookInto = function(queueOffset){
         if(queue[offset + queueOffset] < queue.length){
             return queue[offset + queueOffset]
         } else {
             return undefined
         }
-    };
-
-    this.findEarliestElementWithinRange = function(range){
-
     };
 }
 
