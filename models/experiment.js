@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 var experimentSchema = new Schema({
     value: Number,
     time: Date,
-    phoneID: String
+    phoneID: Number
 });
 
 // the schema is useless so far

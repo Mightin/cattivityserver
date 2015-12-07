@@ -55,17 +55,14 @@ router.get('/', function(req, res, next) {
             if(element != null) {
                 var values = element.values;
                 newLocations[placeID].values = values;
-                console.log(location.id + " has values " + values);
                 return callback();
             } else {
                 newLocations[placeID].values = [0, 0, 0];
-                console.log(location.id + " was unknown");
                 return callback();
             }
         });
     }, function (err) {
         if (err) throw err;
-        console.log("When is this printed?????");
         locations = newLocations;
         res.render('pages/fingerprint', {dots: { phones: phones, locations: locations }});
     });
@@ -73,8 +70,6 @@ router.get('/', function(req, res, next) {
 
 /* POST home page. */
 router.post('/', function(req, res, next) {
-    console.log(JSON.stringify(req.headers));
-    console.log(req.body);
     if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('placeID') &&
        check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.placeID).is("number") ){
 
