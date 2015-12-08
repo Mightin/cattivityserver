@@ -2,9 +2,54 @@
 <html>
 <head>
     <title>Cattivity</title>
-    <script type="text/css" src="stylesheets/style.css"></script>
-    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tipsy/1.0.2/jquery.tipsy.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="javascripts/d3.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tipsy/1.0.2/jquery.tipsy.min.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+        var locations = <%- JSON.stringify(dots.locations) %>;
+
+        function placeDots(){
+            var svgContainer = d3.select(".floorplan-svg");
+
+            // place locations as blue circles
+            svgContainer.selectAll()
+                    .data(locations).enter()
+                    .append("circle")
+                    .attr("fill", "blue")
+                    .attr("r", 10)
+                    .attr("cx", function(d) { return d.x })
+                    .attr("cy", function(d) { return d.y })
+                    .classed("locations",true);
+            $('svg circle').tipsy({
+                html: true,
+                title: function() {
+                    var d = this.__data__;
+                    var tip = "Location: " + d.place + ", ID: " + d.id;
+                    return tip;
+                }
+            });
+        }
+
+        $(function() {
+            $( "#slider" ).slider({
+                range:true,
+                min: 0,
+                max: 500,
+                values: [ 35, 200 ],
+                slide: function( event, ui ) {
+                    $( "#slidevalue" )
+                            .text( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+                }
+            });
+        });
+
+    </script>
 </head>
 <body>
 <% include ../partials/header %>
@@ -14,6 +59,10 @@
         <p>This is a map of the points in the apartment which we have fingerprinted.
             We need to make some cool visualization of our data.
             I imagine some kind of bar with the time, and a dot on the map, showing  where the cat is at a given time.</p>
+        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" onload="placeDots()">
+        </svg>
+        <div id="slider"></div>
+        <div id="slidevalue">text</div>
     </div>
 </div>
 </body>
