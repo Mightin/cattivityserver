@@ -14,50 +14,56 @@ var phones = [
 ];
 
 var locations = [
-    {place: "Food Bowl", id: 1, x: 64, y: 106, values: [1, 2, 3]},
-    {place: "Kitchen Hood", id: 2, x: 208, y: 198, values: [1, 2, 3]},
-    {place: "Kitchen Table", id: 3, x: 58, y: 286, values: [1, 2, 3]},
-    {place: "Kitchen Shelves", id: 4, x: 66, y: 350, values: [1, 2, 3]},
-    {place: "Kitchen Closet", id: 5, x: 218, y: 344, values: [1, 2, 3]},
-    {place: "Bathroom Litterbox", id: 6, x: 328, y: 182, values: [1, 2, 3]},
-    {place: "Bathroom Sink", id: 7, x: 420, y: 106, values: [1, 2, 3]},
-    {place: "Hall, By Shoes", id: 29, x: 292, y: 358, values: [1, 2, 3]},
-    {place: "Hall Door", id: 8, x: 376, y: 342, values: [1, 2, 3]},
-    {place: "Hall, By Livingroom", id: 9, x: 420, y: 282, values: [1, 2, 3]},
-    {place: "Sofa (Left Top)", id: 10, x: 474, y: 64, values: [1, 2, 3]},
-    {place: "Sofa (Middle Top)", id: 11, x: 542, y: 62, values: [1, 2, 3]},
-    {place: "Sofa (Right Top)", id: 12, x: 614, y: 66, values: [1, 2, 3]},
-    {place: "Sofa (Right Middle)", id: 13, x: 614, y: 122, values: [1, 2, 3]},
-    {place: "Sofa (Right Bottom)", id: 14, x: 614, y: 186, values: [1, 2, 3]},
-    {place: "Computer", id: 15, x: 696, y: 76, values: [1, 2, 3]},
-    {place: "Printer", id: 16, x: 764, y: 94, values: [1, 2, 3]},
-    {place: "Cupboard (Left)", id: 17, x: 660, y: 316, values: [1, 2, 3]},
-    {place: "Living room", id: 18, x: 542, y: 318, values: [1, 2, 3]},
-    {place: "Cupboard (Right)", id: 19, x: 742, y: 346, values: [1, 2, 3]},
-    {place: "Terrace, Computer Chair", id: 20, x: 846, y: 80, values: [1, 2, 3]},
-    {place: "Terrace, Chair (Top)", id: 21, x: 874, y: 176, values: [1, 2, 3]},
-    {place: "Terrace, play", id: 22, x: 944, y: 318, values: [1, 2, 3]},
-    {place: "Bedroom, Cupboard", id: 23, x: 502, y: 398, values: [1, 2, 3]},
-    {place: "Bedroom, Bed (Top Left)", id: 24, x: 650, y: 448, values: [1, 2, 3]},
-    {place: "Bedroom, Bed (Bottom Left)", id: 25, x: 650, y: 502, values: [1, 2, 3]},
-    {place: "Bedroom, Bed (Middle Right)", id: 26, x: 736, y: 474, values: [1, 2, 3]},
-    {place: "Bedroom, Night Table", id: 27, x: 800, y: 400, values: [1, 2, 3]},
-    {place: "Bedroom, Windowsill", id: 28, x: 816, y: 458, values: [1, 2, 3]},
-    {place: "Bedroom, Closet", id: 30, x: 464, y: 520, values: [1, 2, 3]}
+    {place: "Food Bowl", id: 1, x: 64, y: 106},
+    {place: "Kitchen Hood", id: 2, x: 208, y: 198},
+    {place: "Kitchen Table", id: 3, x: 58, y: 286},
+    {place: "Kitchen Shelves", id: 4, x: 66, y: 350},
+    {place: "Kitchen Closet", id: 5, x: 218, y: 344},
+    {place: "Bathroom Litterbox", id: 6, x: 328, y: 182},
+    {place: "Bathroom Sink", id: 7, x: 420, y: 106},
+    {place: "Hall, By Shoes", id: 29, x: 292, y: 358},
+    {place: "Hall Door", id: 8, x: 376, y: 342},
+    {place: "Hall, By Livingroom", id: 9, x: 420, y: 282},
+    {place: "Sofa (Left Top)", id: 10, x: 474, y: 64},
+    {place: "Sofa (Middle Top)", id: 11, x: 542, y: 62},
+    {place: "Sofa (Right Top)", id: 12, x: 614, y: 66},
+    {place: "Sofa (Right Middle)", id: 13, x: 614, y: 122},
+    {place: "Sofa (Right Bottom)", id: 14, x: 614, y: 186},
+    {place: "Computer", id: 15, x: 696, y: 76},
+    {place: "Printer", id: 16, x: 764, y: 94},
+    {place: "Cupboard (Left)", id: 17, x: 660, y: 316},
+    {place: "Living room", id: 18, x: 542, y: 318},
+    {place: "Cupboard (Right)", id: 19, x: 742, y: 346},
+    {place: "Terrace, Computer Chair", id: 20, x: 846, y: 80},
+    {place: "Terrace, Chair (Top)", id: 21, x: 874, y: 176},
+    {place: "Terrace, play", id: 22, x: 944, y: 318},
+    {place: "Bedroom, Cupboard", id: 23, x: 502, y: 398},
+    {place: "Bedroom, Bed (Top Left)", id: 24, x: 650, y: 448},
+    {place: "Bedroom, Bed (Bottom Left)", id: 25, x: 650, y: 502},
+    {place: "Bedroom, Bed (Middle Right)", id: 26, x: 736, y: 474},
+    {place: "Bedroom, Night Table", id: 27, x: 800, y: 400},
+    {place: "Bedroom, Windowsill", id: 28, x: 816, y: 458},
+    {place: "Bedroom, Closet", id: 30, x: 464, y: 520}
 ];
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    var newLocations = locations;
+    var data = locations;
     async.forEachOf(locations, function(location, placeID, callback) {
         Fingerprint.findOne({"placeID": location.id}, function(err, element) {
             if (err) return callback(err);
             if(element != null) {
                 var values = element.values;
+                var measuredValues = element.measuredValues;
+                var run = element.run;
                 newLocations[placeID].values = values;
+                newLocations[placeID].measuredValues = measuredValues;
+                newLocations[placeID].run = run;
                 return callback();
             } else {
                 newLocations[placeID].values = [0, 0, 0];
+                newLocations[placeID].measuredValues = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+                newLocations[placeID].run = 0;
                 return callback();
             }
         });
@@ -70,8 +76,8 @@ router.get('/', function(req, res, next) {
 
 /* POST home page. */
 router.post('/', function(req, res, next) {
-    if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('placeID') &&
-       check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.placeID).is("number") ){
+    if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('placeID') && req.body.hasOwnProperty('run') &&
+       check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.placeID).is("number") && check(req.body.run).is("number") ){
 
         postFingerprint(req, res);
 
@@ -83,29 +89,40 @@ router.post('/', function(req, res, next) {
 });
 
 function postFingerprint(req, res){
-    Fingerprint.findOne({"placeID": req.body.placeID}, function(err, element) {
+    Fingerprint.findOne({"placeID": req.body.placeID, "run": req.body.run}, function(err, element) {
         if(err) throw err;
         var avg = d3.mean(req.body.values);
 
         // Element already exists
         if(element != null){
             var newVals = element.values;
+            var newMeasured = element.measuredValues;
             newVals[req.body.phoneID - 1] = avg;
+            newMeasured[req.body.phoneID - 1] = req.body.values;
             Fingerprint.findOneAndUpdate({"placeID": req.body.placeID},
-                {"values": newVals},
+                {"values": newVals,
+                 "measuredValues": newMeasured},
                 function (err, element) {
                     if (err) throw err;
                     res.status(200);
                     res.send('POST request to the homepage successful');
                     console.log('Update of fingerprint was successful!');
-                });
+                }
+            );
+
         } else {
+            var index = req.body.phoneID - 1;
             var newVals = [0, 0, 0];
-            newVals[req.body.phoneID - 1] = avg;
+            newVals[index] = avg;
+            var newMeasured = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+            newMeasured[(index * 3) + 0] = req.body.values[0];
+            newMeasured[(index * 3) + 1] = req.body.values[1];
+            newMeasured[(index * 3) + 2] = req.body.values[2];
             var newFingerprint = Fingerprint({
-                placeID: req.body.placeID,
                 values: newVals,
-                phoneID: req.body.phoneID
+                phoneID: req.body.phoneID,
+                measuredValues: newMeasured,
+                run: req.body.run
             });
 
             newFingerprint.save(function (err) {
