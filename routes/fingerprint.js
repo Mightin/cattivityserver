@@ -52,24 +52,24 @@ var locations = [
     {place: "Bedroom, Closet", placeID: 30, x: 464, y: 520},
 
     {place: "0,0", placeID: 31, x: 574, y: 330},
-    {place: "1,0", placeID: 31, x: 623, y: 330},
-    {place: "2,0", placeID: 31, x: 673, y: 330},
-    {place: "3,0", placeID: 31, x: 722, y: 330},
+    {place: "1,0", placeID: 32, x: 623, y: 330},
+    {place: "2,0", placeID: 33, x: 673, y: 330},
+    {place: "3,0", placeID: 34, x: 722, y: 330},
 
-    {place: "0,1", placeID: 31, x: 574, y: 281},
-    {place: "1,1", placeID: 31, x: 623, y: 281},
-    {place: "2,1", placeID: 31, x: 673, y: 281},
-    {place: "3,1", placeID: 31, x: 722, y: 281},
+    {place: "0,1", placeID: 35, x: 574, y: 281},
+    {place: "1,1", placeID: 36, x: 623, y: 281},
+    {place: "2,1", placeID: 37, x: 673, y: 281},
+    {place: "3,1", placeID: 38, x: 722, y: 281},
 
-    {place: "0,2", placeID: 31, x: 574, y: 231},
-    {place: "1,2", placeID: 31, x: 623, y: 231},
-    {place: "2,2", placeID: 31, x: 673, y: 231},
-    {place: "3,2", placeID: 31, x: 722, y: 231},
+    {place: "0,2", placeID: 39, x: 574, y: 231},
+    {place: "1,2", placeID: 40, x: 623, y: 231},
+    {place: "2,2", placeID: 41, x: 673, y: 231},
+    {place: "3,2", placeID: 42, x: 722, y: 231},
 
-    {place: "0,3", placeID: 31, x: 574, y: 182},
-    {place: "1,3", placeID: 31, x: 623, y: 182},
-    {place: "2,3", placeID: 31, x: 673, y: 182},
-    {place: "3,3", placeID: 31, x: 722, y: 182}
+    {place: "0,3", placeID: 43, x: 574, y: 182},
+    {place: "1,3", placeID: 44, x: 623, y: 182},
+    {place: "2,3", placeID: 45, x: 673, y: 182},
+    {place: "3,3", placeID: 46, x: 722, y: 182}
 ];
 
 /* GET home page. */
