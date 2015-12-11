@@ -9,6 +9,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tipsy/1.0.2/jquery.tipsy.min.js"></script>
     <script>
         var phones = <%- JSON.stringify(dots.phones ) %>;
+        var phonesForTest = <%- JSON.stringify(dots.phonesForTest ) %>;
         var locations = <%- JSON.stringify(dots.locations) %>;
 
         function filterByRun(obj) {
@@ -21,12 +22,17 @@
         }
 
         function placeDots(run){
+            if(run == 2){
+                phonesData = phonesForTest;
+            } else {
+                phonesData = phones;
+            }
             var svgContainer = d3.select(".floorplan-svg");
             svgContainer.selectAll("*").remove();
 
             // place phones as red rectangles
             svgContainer.selectAll()
-                    .data(phones).enter()
+                    .data(phonesData).enter()
                     .append("rect")
                     .attr("fill", "red")
                     .attr("width", 10)
@@ -82,6 +88,7 @@
         <span>
             <button type="button" class="btn btn-primary" onclick="placeDots(1)">First</button>
             <button type="button" class="btn btn-primary" onclick="placeDots(2)">Second</button>
+            <button type="button" class="btn btn-primary" onclick="placeDots(3)">Third</button>
         </span>
         <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)">
         </svg>

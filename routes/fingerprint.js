@@ -13,6 +13,12 @@ var phones = [
     {place: "Bedroom", id: 3, x: 560, y: 530}
 ];
 
+var phonesForTest = [
+    {place: "Kitchen", id: 1, x: 560, y: 175},
+    {place: "Livingroom", id: 2, x: 700, y: 80},
+    {place: "Bedroom", id: 3, x: 560, y: 330}
+];
+
 var locations = [
     {place: "Food Bowl", placeID: 1, x: 64, y: 106},
     {place: "Kitchen Hood", placeID: 2, x: 208, y: 198},
@@ -66,7 +72,7 @@ router.get('/', function(req, res, next) {
     }).on('error', function (err) {
         console.log(err);
     }).on('close', function () {
-        res.render('pages/fingerprint', {dots: { phones: phones, locations: data}});
+        res.render('pages/fingerprint', {dots: { phones: phones, phonesForTest: phonesForTest, locations: data}});
     });
 });
 
@@ -98,6 +104,10 @@ function postFingerprint(req, res){
             newMeasured[(index * 3) + 0] = req.body.values[0];
             newMeasured[(index * 3) + 1] = req.body.values[1];
             newMeasured[(index * 3) + 2] = req.body.values[2];
+            newMeasured[(index * 3) + 3] = req.body.values[3];
+            newMeasured[(index * 3) + 4] = req.body.values[4];
+            newMeasured[(index * 3) + 5] = req.body.values[5];
+            newMeasured[(index * 3) + 6] = req.body.values[6];
             Fingerprint.findOneAndUpdate({placeID: req.body.placeID, run: req.body.run},
                 {values: newVals,
                  measuredValues: newMeasured},
@@ -113,10 +123,14 @@ function postFingerprint(req, res){
             var index = req.body.phoneID - 1;
             var newVals = [0, 0, 0];
             newVals[index] = avg;
-            var newMeasured = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+            var newMeasured = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
             newMeasured[(index * 3) + 0] = req.body.values[0];
             newMeasured[(index * 3) + 1] = req.body.values[1];
             newMeasured[(index * 3) + 2] = req.body.values[2];
+            newMeasured[(index * 3) + 3] = req.body.values[3];
+            newMeasured[(index * 3) + 4] = req.body.values[4];
+            newMeasured[(index * 3) + 5] = req.body.values[5];
+            newMeasured[(index * 3) + 6] = req.body.values[6];
             var newFingerprint = Fingerprint({
                 placeID: req.body.placeID,
                 values: newVals,
