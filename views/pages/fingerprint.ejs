@@ -11,8 +11,18 @@
         var phones = <%- JSON.stringify(dots.phones ) %>;
         var locations = <%- JSON.stringify(dots.locations) %>;
 
-        function placeDots(){
+        function filterByRun(obj) {
+            if ('run' in obj && typeof(obj.run) === 'number' && !isNaN(obj.run)) {
+                return true;
+            } else {
+                invalidEntries++;
+                return false;
+            }
+        }
+
+        function placeDots(run){
             var svgContainer = d3.select(".floorplan-svg");
+            svgContainer.selectAll("*").remove();
 
             // place phones as red rectangles
             svgContainer.selectAll()
@@ -32,9 +42,19 @@
                 }
             });
 
+            function filterByRun(obj) {
+                if ('run' in obj && typeof(obj.run) === 'number' && !isNaN(obj.run) && obj.run === run) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            var data = locations.filter(filterByRun);
+            console.log(data);
+
             // place locations as blue circles
             svgContainer.selectAll()
-                    .data(locations).enter()
+                    .data(data).enter()
                     .append("circle")
                     .attr("fill", "blue")
                     .attr("r", 10)
@@ -45,7 +65,7 @@
                 html: true,
                 title: function() {
                     var d = this.__data__;
-                    var tip = "Location: " + d.place + ", ID: " + d.id + ", values: " + d.values;
+                    var tip = "Location: " + d.place + ", ID: " + d.placeID + ", values: " + d.values;
                     return tip;
                 }
             });
@@ -55,11 +75,15 @@
 <body>
 <% include ../partials/header %>
 
-<div class="container" onload="placeDots()">
+<div class="container">
     <div class="jumbotron">
         <h1>Fingerprint</h1>
         <p>This is a map of the points in the apartment which we have fingerprinted. Hovering on a point shows the average RSSI-values for the 3 beacons.</p>
-        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" onload="placeDots()">
+        <span>
+            <button type="button" class="btn btn-primary" onclick="placeDots(1)">First</button>
+            <button type="button" class="btn btn-primary" onclick="placeDots(2)">Second</button>
+        </span>
+        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)">
         </svg>
     </div>
 </div>
