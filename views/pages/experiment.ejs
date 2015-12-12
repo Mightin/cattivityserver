@@ -38,13 +38,13 @@
 
         $(function() {
             $( "#slider" ).slider({
-                range:true,
+                range:false,
                 min: 0,
                 max: 500,
-                values: [ 35, 200 ],
+                values: [0],
                 slide: function( event, ui ) {
                     $( "#slidevalue" )
-                            .text( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+                            .text("Value: " + ui.values[ 0 ]);
                 }
             });
         });
@@ -58,11 +58,12 @@
         <h1>Experiment</h1>
         <p>This is a map of the points in the apartment which we have fingerprinted.
             We need to make some cool visualization of our data.
-            I imagine some kind of bar with the time, and a dot on the map, showing  where the cat is at a given time.</p>
+            I imagine some kind of bar with the time, and a dot on the map, showing  where the cat is at a given time.
+        </p>
+        <div id="slider"></div>
+        <div id="slidevalue">Value: 0</div>
         <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" onload="placeDots()">
         </svg>
-        <div id="slider"></div>
-        <div id="slidevalue">text</div>
     </div>
 </div>
 </body>

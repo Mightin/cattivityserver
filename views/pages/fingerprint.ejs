@@ -11,6 +11,9 @@
         var phones = <%- JSON.stringify(dots.phones ) %>;
         var phonesForTest = <%- JSON.stringify(dots.phonesForTest ) %>;
         var locations = <%- JSON.stringify(dots.locations) %>;
+        var phonesData = [];
+        var experimentDescription = "This is just a normal fingerprinting. We have measured different points in the apartment";
+        var baselineDescription = "This is a baseline experiment. We have measured an even grid, and have placed the beacon at different points, to measure the accuracy of bluetooth as a positioning technology."
 
         function filterByRun(obj) {
             if ('run' in obj && typeof(obj.run) === 'number' && !isNaN(obj.run)) {
@@ -22,11 +25,15 @@
         }
 
         function placeDots(run){
+            var text = "";
             if(run == 2){
                 phonesData = phonesForTest;
+                text = baselineDescription;
             } else {
                 phonesData = phones;
+                text = experimentDescription;
             }
+            $("#description").text(text);
             var svgContainer = d3.select(".floorplan-svg");
             svgContainer.selectAll("*").remove();
 
@@ -86,11 +93,12 @@
         <h1>Fingerprint</h1>
         <p>This is a map of the points in the apartment which we have fingerprinted. Hovering on a point shows the average RSSI-values for the 3 beacons.</p>
         <span>
+            <button type="button" class="btn btn-primary" onclick="placeDots(2)">Baseline</button>
             <button type="button" class="btn btn-primary" onclick="placeDots(1)">First</button>
-            <button type="button" class="btn btn-primary" onclick="placeDots(2)">Second</button>
-            <button type="button" class="btn btn-primary" onclick="placeDots(3)">Third</button>
+            <button type="button" class="btn btn-primary" onclick="placeDots(3)">Second</button>
         </span>
-        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)">
+        <p id="description"></p>
+        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)"  onload="placeDots(2)">
         </svg>
     </div>
 </div>

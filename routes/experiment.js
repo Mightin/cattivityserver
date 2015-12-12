@@ -157,8 +157,8 @@ router.post('/', function(req, res, next) {
         }
     } else {
         res.status(400);
-        res.send('POST request to the homepage not successful');
-        console.log('POST was not successful!');
+        res.send('POST request to the homepage failed');
+        console.log('POST failed!');
     }
 });
 

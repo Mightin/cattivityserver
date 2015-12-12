@@ -14,9 +14,9 @@ var phones = [
 ];
 
 var phonesForTest = [
-    {place: "Kitchen", id: 1, x: 560, y: 175},
-    {place: "Livingroom", id: 2, x: 700, y: 80},
-    {place: "Bedroom", id: 3, x: 560, y: 330}
+    {place: "TV", id: 1, x: 510, y: 207},
+    {place: "Comp", id: 2, x: 722, y: 131},
+    {place: "Corner", id: 3, x: 722, y: 330}
 ];
 
 var locations = [
@@ -105,8 +105,8 @@ router.post('/', function(req, res, next) {
 
     } else {
         res.status(400);
-        res.send('POST request to the homepage not successful');
-        console.log('POST was not successful!');
+        res.send('POST request to the homepage failed');
+        console.log('POST failed!');
     }
 });
 
