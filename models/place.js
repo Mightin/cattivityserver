@@ -6,7 +6,8 @@ var Schema = mongoose.Schema;
 // create a schema
 var placeSchema = new Schema({
     place: String,
-    time: Date
+    values: [Number],
+    time: Number
 });
 
 // the schema is useless so far

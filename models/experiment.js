@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 
 // create a schema
 var experimentSchema = new Schema({
-    values: [Number],
+    value: Number,
+    phoneID: Number,
     time: Number,
     run: Number
 });

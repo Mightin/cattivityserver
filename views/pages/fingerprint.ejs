@@ -9,7 +9,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tipsy/1.0.2/jquery.tipsy.min.js"></script>
     <script>
         var phones = <%- JSON.stringify(dots.phones ) %>;
-        var phonesForTest = <%- JSON.stringify(dots.phonesForTest ) %>;
+        var phonesForBaseline = <%- JSON.stringify(dots.phonesForBaseline ) %>;
         var locations = <%- JSON.stringify(dots.locations) %>;
         var phonesData = [];
         var experimentDescription = "This is just a normal fingerprinting. We have measured different points in the apartment";
@@ -27,7 +27,7 @@
         function placeDots(run){
             var text = "";
             if(run == 2){
-                phonesData = phonesForTest;
+                phonesData = phonesForBaseline;
                 text = baselineDescription;
             } else {
                 phonesData = phones;

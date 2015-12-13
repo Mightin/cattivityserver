@@ -12,39 +12,36 @@
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script>
-        var locations = <%- JSON.stringify(dots.locations) %>;
+        var places = <%- JSON.stringify(dots.places) %>;
+        var min = places[0].time;
+        var max = places[places.length - 1].time;
+        var maxVal = (max - min);
 
-        function placeDots(){
+        function placeDot(dotToPlace){
             var svgContainer = d3.select(".floorplan-svg");
-
+            svgContainer.selectAll("*").remove();
+            var dot = [dotToPlace];
             // place locations as blue circles
             svgContainer.selectAll()
-                    .data(locations).enter()
+                    .data(dot).enter()
                     .append("circle")
                     .attr("fill", "blue")
                     .attr("r", 10)
                     .attr("cx", function(d) { return d.x })
-                    .attr("cy", function(d) { return d.y })
-                    .classed("locations",true);
-            $('svg circle').tipsy({
-                html: true,
-                title: function() {
-                    var d = this.__data__;
-                    var tip = "Location: " + d.place + ", ID: " + d.id;
-                    return tip;
-                }
-            });
+                    .attr("cy", function(d) { return d.y });
         }
 
         $(function() {
             $( "#slider" ).slider({
                 range:false,
                 min: 0,
-                max: 500,
+                max: maxVal,
                 values: [0],
                 slide: function( event, ui ) {
-                    $( "#slidevalue" )
-                            .text("Value: " + ui.values[ 0 ]);
+                    var value = ui.values[0];
+                    $("#slidevalue").text("Value: " + value);
+
+                    placeDot(places[value]);
                 }
             });
         });
@@ -56,14 +53,16 @@
 <div class="container">
     <div class="jumbotron">
         <h1>Experiment</h1>
-        <p>This is a map of the points in the apartment which we have fingerprinted.
+        <p>
+            This is a map of the points in the apartment which we have fingerprinted.
             We need to make some cool visualization of our data.
             I imagine some kind of bar with the time, and a dot on the map, showing  where the cat is at a given time.
         </p>
         <div id="slider"></div>
-        <div id="slidevalue">Value: 0</div>
-        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" onload="placeDots()">
-        </svg>
+        <div id="slidevalue">
+            Value: 0
+        </div>
+        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" onload="placeDot(places[0])"></svg>
     </div>
 </div>
 </body>
