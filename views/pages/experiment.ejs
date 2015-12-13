@@ -64,6 +64,9 @@
         {
             var value = $( "#slider" ).slider( "values", 0);
             var nextValue = value + 1;
+            if(nextValue >= maxVal){
+                stopAnimation();
+            }
             $( "#slider" ).slider( "values", 0, nextValue );
             $("#slidevalue").text("Value: " + nextValue);
             placeDot(places[nextValue]);

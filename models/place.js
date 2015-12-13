@@ -5,9 +5,11 @@ var Schema = mongoose.Schema;
 
 // create a schema
 var placeSchema = new Schema({
-    place: String,
+    placeID: Number,
+    time: Number,
     values: [Number],
-    time: Number
+    run: Number,
+    madeFromRun: Number
 });
 
 // the schema is useless so far

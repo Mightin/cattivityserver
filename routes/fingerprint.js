@@ -11,7 +11,7 @@ var constants = require('../util/constants.js')
 var phones = constants.phones;
 var phonesForBaseline = constants.phonesForBaseline;
 var locations = constants.locations;
-
+var numberOfMeasurement = 7;
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var data = [];
@@ -20,7 +20,6 @@ router.get('/', function(req, res, next) {
         var index = doc.placeID - 1;
         var dataPoint = {};
         dataPoint.place = locations[index].place;
-        dataPoint.placeID = locations[index].placeID;
         dataPoint.x = locations[index].x;
         dataPoint.y = locations[index].y;
         dataPoint.placeID = doc.placeID;
@@ -60,13 +59,9 @@ function postFingerprint(req, res){
             var newVals = element.values;
             newVals[index] = avg;
             var newMeasured = element.measuredValues;
-            newMeasured[(index * 3) + 0] = req.body.values[0];
-            newMeasured[(index * 3) + 1] = req.body.values[1];
-            newMeasured[(index * 3) + 2] = req.body.values[2];
-            newMeasured[(index * 3) + 3] = req.body.values[3];
-            newMeasured[(index * 3) + 4] = req.body.values[4];
-            newMeasured[(index * 3) + 5] = req.body.values[5];
-            newMeasured[(index * 3) + 6] = req.body.values[6];
+            for(var i = 0; i < numberOfMeasurement; i++){
+                newMeasured[(index * numberOfMeasurement) + i] = req.body.values[i];
+            }
             Fingerprint.findOneAndUpdate({placeID: req.body.placeID, run: req.body.run},
                 {values: newVals,
                  measuredValues: newMeasured},
@@ -83,13 +78,9 @@ function postFingerprint(req, res){
             var newVals = [0, 0, 0];
             newVals[index] = avg;
             var newMeasured = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-            newMeasured[(index * 3) + 0] = req.body.values[0];
-            newMeasured[(index * 3) + 1] = req.body.values[1];
-            newMeasured[(index * 3) + 2] = req.body.values[2];
-            newMeasured[(index * 3) + 3] = req.body.values[3];
-            newMeasured[(index * 3) + 4] = req.body.values[4];
-            newMeasured[(index * 3) + 5] = req.body.values[5];
-            newMeasured[(index * 3) + 6] = req.body.values[6];
+            for(var i = 0; i < numberOfMeasurement; i++){
+                newMeasured[(index * numberOfMeasurement) + i] = req.body.values[i];
+            }
             var newFingerprint = Fingerprint({
                 placeID: req.body.placeID,
                 values: newVals,

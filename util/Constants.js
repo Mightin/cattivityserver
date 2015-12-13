@@ -99,8 +99,6 @@ var locations = [
     {place: "Bedroom 1,0", placeID: 53, x: 631, y: 469},
     {place: "Bedroom 2,0", placeID: 54, x: 719, y: 469},
     {place: "Bedroom 3,0", placeID: 54, x: 807, y: 469}
-
-
 ];
 
 module.exports = module.exports = {
