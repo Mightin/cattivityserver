@@ -78,29 +78,27 @@ var locations = [
     {place: "Livingroom 1,2", placeID: 54, x: 631, y: 111},
     {place: "Livingroom 2,2", placeID: 55, x: 719, y: 111},
 
-    {place: "Entrance 0,0", placeID: 55, x: 356, y: 287},
-    {place: "Bathroom 0,0", placeID: 53, x: 356, y: 199},
-    {place: "Bathroom 0,1", placeID: 54, x: 356, y: 111},
+    {place: "Entrance 0,0", placeID: 56, x: 356, y: 287},
+    {place: "Bathroom 0,0", placeID: 57, x: 356, y: 199},
+    {place: "Bathroom 0,1", placeID: 58, x: 356, y: 111},
 
-    {place: "Kitchen 0,0", placeID: 50, x: 104, y: 287},
-    {place: "Kitchen 1,0", placeID: 50, x: 192, y: 287},
+    {place: "Kitchen 0,0", placeID: 59, x: 104, y: 287},
+    {place: "Kitchen 1,0", placeID: 60, x: 192, y: 287},
 
-    {place: "Kitchen 0,1", placeID: 50, x: 104, y: 199},
-    {place: "Kitchen 1,1", placeID: 50, x: 192, y: 199},
+    {place: "Kitchen 0,1", placeID: 61, x: 104, y: 199},
+    {place: "Kitchen 1,1", placeID: 62, x: 192, y: 199},
 
-    {place: "Kitchen 0,2", placeID: 50, x: 104, y: 111},
-    {place: "Kitchen 1,2", placeID: 50, x: 192, y: 111},
+    {place: "Kitchen 0,2", placeID: 63, x: 104, y: 111},
+    {place: "Kitchen 1,2", placeID: 64, x: 192, y: 111},
 
-    {place: "Balcony 0,0", placeID: 55, x: 888, y: 287},
-    {place: "Balcony 0,1", placeID: 53, x: 888, y: 199},
-    {place: "Balcony 0,2", placeID: 54, x: 888, y: 111},
+    {place: "Balcony 0,0", placeID: 65, x: 888, y: 287},
+    {place: "Balcony 0,1", placeID: 66, x: 888, y: 199},
+    {place: "Balcony 0,2", placeID: 67, x: 888, y: 111},
 
-    {place: "Bedroom 0,0", placeID: 55, x: 543, y: 469},
-    {place: "Bedroom 1,0", placeID: 53, x: 631, y: 469},
-    {place: "Bedroom 2,0", placeID: 54, x: 719, y: 469},
-    {place: "Bedroom 3,0", placeID: 54, x: 807, y: 469},
-
-    {place: "make git fat noget punkt", placeID: 55, x: 807, y: 469}
+    {place: "Bedroom 0,0", placeID: 68, x: 543, y: 469},
+    {place: "Bedroom 1,0", placeID: 69, x: 631, y: 469},
+    {place: "Bedroom 2,0", placeID: 70, x: 719, y: 469},
+    {place: "Bedroom 3,0", placeID: 71, x: 807, y: 469}
 ];
 
 module.exports = module.exports = {
