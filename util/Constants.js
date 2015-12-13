@@ -1,7 +1,7 @@
 /**
  * Created by Martin on 12-12-2015.
  */
-
+// to make git fat noget
 var phones = [
     {place: "Kitchen", id: 1, x: 230, y: 175},
     {place: "Livingroom", id: 2, x: 700, y: 80},
@@ -98,7 +98,9 @@ var locations = [
     {place: "Bedroom 0,0", placeID: 55, x: 543, y: 469},
     {place: "Bedroom 1,0", placeID: 53, x: 631, y: 469},
     {place: "Bedroom 2,0", placeID: 54, x: 719, y: 469},
-    {place: "Bedroom 3,0", placeID: 54, x: 807, y: 469}
+    {place: "Bedroom 3,0", placeID: 54, x: 807, y: 469},
+
+    {place: "make git fat noget punkt", placeID: 55, x: 807, y: 469}
 ];
 
 module.exports = module.exports = {

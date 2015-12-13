@@ -9,7 +9,7 @@ moment().format();
 var Fingerprint = require('../models/fingerprint');
 var Experiment = require('../models/experiment');
 var Place = require('../models/place');
-var constants = require('../util/constants');
+var constants = require('../util/Constants');
 var Queue = require('../util/queue');
 
 var valuesFromPhones = [new Queue(), new Queue(), new Queue()];

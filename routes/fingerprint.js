@@ -6,7 +6,7 @@ var router = express.Router();
 var check = require("check-type").init();
 
 var Fingerprint = require('../models/fingerprint');
-var constants = require('../util/constants.js')
+var constants = require('../util/Constants.js')
 
 var phones = constants.phones;
 var phonesForBaseline = constants.phonesForBaseline;
