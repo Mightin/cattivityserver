@@ -60,6 +60,7 @@ router.post('/', function(req, res, next) {
         // get item
         var item = req.body;
 
+        item.time = (new Date).getTime();
         if(!fingerPrintsAcquired){
             getFingerprints();
         }
