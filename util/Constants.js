@@ -64,7 +64,46 @@ var locations = [
     {place: "0,3", placeID: 43, x: 574, y: 182},
     {place: "1,3", placeID: 44, x: 623, y: 182},
     {place: "2,3", placeID: 45, x: 673, y: 182},
-    {place: "3,3", placeID: 46, x: 722, y: 182}
+    {place: "3,3", placeID: 46, x: 722, y: 182},
+
+    {place: "Livingroom 0,0", placeID: 47, x: 543, y: 287},
+    {place: "Livingroom 1,0", placeID: 48, x: 631, y: 287},
+    {place: "Livingroom 2,0", placeID: 49, x: 719, y: 287},
+
+    {place: "Livingroom 0,1", placeID: 50, x: 543, y: 199},
+    {place: "Livingroom 1,1", placeID: 51, x: 631, y: 199},
+    {place: "Livingroom 2,1", placeID: 52, x: 719, y: 199},
+
+    {place: "Livingroom 0,2", placeID: 53, x: 543, y: 111},
+    {place: "Livingroom 1,2", placeID: 54, x: 631, y: 111},
+    {place: "Livingroom 2,2", placeID: 55, x: 719, y: 111},
+
+    {place: "Entrance 0,0", placeID: 55, x: 356, y: 287},
+    {place: "Bathroom 0,0", placeID: 53, x: 356, y: 199},
+    {place: "Bathroom 0,1", placeID: 54, x: 356, y: 111},
+
+    {place: "Kitchen 0,0", placeID: 50, x: 104, y: 287},
+    {place: "Kitchen 1,0", placeID: 50, x: 192, y: 287},
+
+    {place: "Kitchen 0,1", placeID: 50, x: 104, y: 199},
+    {place: "Kitchen 1,1", placeID: 50, x: 192, y: 199},
+
+    {place: "Kitchen 0,2", placeID: 50, x: 104, y: 111},
+    {place: "Kitchen 1,2", placeID: 50, x: 192, y: 111},
+
+    {place: "Balcony 0,0", placeID: 55, x: 888, y: 287},
+    {place: "Balcony 0,1", placeID: 53, x: 888, y: 199},
+    {place: "Balcony 0,2", placeID: 54, x: 888, y: 111},
+
+    {place: "Bedroom 0,0", placeID: 55, x: 543, y: 469},
+    {place: "Bedroom 1,0", placeID: 53, x: 631, y: 469},
+    {place: "Bedroom 2,0", placeID: 54, x: 719, y: 469},
+    {place: "Bedroom 3,0", placeID: 54, x: 807, y: 469},
+
+
+
+
+
 ];
 
 module.exports = module.exports = {
