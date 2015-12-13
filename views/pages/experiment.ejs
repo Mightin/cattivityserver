@@ -37,14 +37,41 @@
                 min: 0,
                 max: maxVal,
                 values: [0],
+                animate: "fast",
                 slide: function( event, ui ) {
                     var value = ui.values[0];
                     $("#slidevalue").text("Value: " + value);
-
+                    placeDot(places[value]);
+                },
+                slidechange: function( event, ui ) {
+                    var value = ui.values[0];
+                    $("#slidevalue").text("Value: " + value);
                     placeDot(places[value]);
                 }
             });
         });
+
+        var iFrequency = 1000; // expressed in miliseconds
+        var myInterval = 0;
+
+        // STARTS and Resets the loop if any
+        function startAnimation() {
+            if(myInterval > 0) clearInterval(myInterval);  // stop
+            myInterval = setInterval( "runSlider()", iFrequency );  // run
+        }
+
+        function runSlider()
+        {
+            var value = $( "#slider" ).slider( "values", 0);
+            var nextValue = value + 1;
+            $( "#slider" ).slider( "values", 0, nextValue );
+            $("#slidevalue").text("Value: " + nextValue);
+            placeDot(places[nextValue]);
+        }
+
+        function stopAnimation() {
+            if(myInterval > 0) clearInterval(myInterval);  // stop
+        }
 
     </script>
 </head>
@@ -58,6 +85,12 @@
             We need to make some cool visualization of our data.
             I imagine some kind of bar with the time, and a dot on the map, showing  where the cat is at a given time.
         </p>
+        <span>
+            <button type="button" class="btn btn-primary" onclick="startAnimation()">Start</button>
+            <button type="button" class="btn btn-primary" onclick="stopAnimation()">Stop</button>
+             <br>
+        </span>
+        <br>
         <div id="slider"></div>
         <div id="slidevalue">
             Value: 0
