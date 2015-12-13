@@ -23,8 +23,7 @@ var places = [
     {placeID: 3, x: 58, y: 286, time: 1449973510, run: 0},
     {placeID: 4, x: 66, y: 350, time: 1449973511, run: 0},
     {placeID: 5, x: 218, y: 344, time: 1449973512, run: 0},
-    {placeID: 6, x: 328, y: 182, time: 1449973513, run: 0},
-    {placeID: 7, x: 420, y: 106, time: 1449973514, run: 0}
+    {placeID: 6, x: 328, y: 182, time: 1449973513, run: 0}
 ];
 
 var fingerPrintsAcquired = false;
