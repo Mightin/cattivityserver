@@ -76,8 +76,9 @@ router.post('/', function(req, res, next) {
             res.status(200);
             res.send('POST request to the homepage successful');
             console.log('POST was successful, no place point made!');
-        } else { // there is data from each phone
 
+        } else { // there is data from each phone
+            console.log("this should not be the same as before: " + valuesFromPhones[0].lookInto(0));
             // get the first element from each phones queue
             var data1 = valuesFromPhones[0].lookInto(0);
             var data2 = valuesFromPhones[1].lookInto(0);
@@ -94,15 +95,14 @@ router.post('/', function(req, res, next) {
             if(diff <= maxDifference){
                 var dataValues = [data1.value, data2.value, data3.value];
                 var avgTime = d3.mean([data1.time, data2.time, data3.time]);
-                console.log("AvgTime: " + avgTime);
-                console.log("fingerprints.length: " + fingerprints.length);
+
                 var bestPlaceID;
                 var bestDistance;
                 var distance;
                 for(var i = 0; i < fingerprints.length; i++){
                     bestPlaceID = 0;
                     bestDistance = 9999999999;
-                    console.log("i" + i);
+
                     for(var j = 0; j < fingerprints[i].length; j++){
                         // find distance
                         distance = Math.sqrt(
@@ -116,7 +116,6 @@ router.post('/', function(req, res, next) {
                         }
                     }
 
-                    console.log("before making new place");
                     // save the place
                     var newPlace = new Place({
                         placeID: bestPlaceID,
@@ -125,7 +124,7 @@ router.post('/', function(req, res, next) {
                         run: data1.run,
                         madeFromRun: (i+1)
                     });
-                    console.log("before saving new place");
+
                     newPlace.save(function (err) {
                         if (err){
                             console.log(err);
@@ -133,20 +132,18 @@ router.post('/', function(req, res, next) {
                         }
                         console.log('New place have been calculated. Place: ' + bestPlaceID + " made from run: " + data1.run);
                     });
-                    console.log("after saving new place");
                 }
-                console.log("Done with both for-loops");
             }
 
             // remove the temporally smallest element from the queues
             // if multiple first elements are smallest, remove all
             console.log("minTime: " + minTime + " data1: " + data1.time);
             if(min == data1.time){
-                valuesFromPhones[0].dequeue();
+                var del1 = valuesFromPhones[0].dequeue();
             } else if(min == data2.time){
-                valuesFromPhones[1].dequeue();
+                var del2 = valuesFromPhones[1].dequeue();
             } else if(min == data3.time){
-                valuesFromPhones[2].dequeue();
+                var del3 = valuesFromPhones[2].dequeue();
             }
         }
     } else {

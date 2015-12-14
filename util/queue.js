@@ -23,11 +23,11 @@ function Queue(){
         if (queue.length == 0) return undefined;
         var item = queue[offset];
         offset++;
-        // Make queue shorter
+        /*// Make queue shorter
         if(offset >= maxOffset){
             queue = queue.slice(offset);
             offset = 0;
-        }
+        }*/
         return item;
     };
 
