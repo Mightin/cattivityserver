@@ -16,11 +16,16 @@
         var min = places[0].time;
         var max = places[places.length - 1].time;
         var maxVal = (max - min);
+        var lastDotIndex = 0;
 
         function placeDot(dotToPlace){
+            if(places[lastDotIndex + 1] == dotToPlace){
+                lastDotIndex = dotToPlace;
+            }
             var svgContainer = d3.select(".floorplan-svg");
             svgContainer.selectAll("*").remove();
-            var dot = [dotToPlace];
+            var dot = [places[lastDotIndex]];
+
             // place locations as blue circles
             svgContainer.selectAll()
                     .data(dot).enter()
@@ -69,7 +74,7 @@
             }
             $( "#slider" ).slider( "values", 0, nextValue );
             $("#slidevalue").text("Value: " + nextValue);
-            placeDot(places[nextValue]);
+            placeDot(nextValue);
         }
 
         function stopAnimation() {
