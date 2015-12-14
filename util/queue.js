@@ -20,7 +20,7 @@ function Queue(){
     };
 
     this.dequeue = function(){
-        if (queue.length == 0) return undefined;
+        if (this.getLength == 0) return undefined;
         var item = queue[offset];
         offset++;
         /*// Make queue shorter
