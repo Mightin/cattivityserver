@@ -11,12 +11,53 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
     <script>
-        var places = <%- JSON.stringify(dots.places) %>;
-        var min = places[0].time;
-        var max = places[places.length - 1].time;
-        var maxVal = (max - min);
+        var data = <%- JSON.stringify(dots.places) %>;
+        var places;
+        var minTime;
+        var maxTime;
+        var maxValueForSlider;
         var lastDotIndex = 0;
+        var iFrequency = 200; // expressed in miliseconds
+        var myInterval = 0;
+
+        function setData(){
+            var experimentDescription = $("#Experiment option:selected").text();
+            var fingerprintDescription = $("#Fingerprint option:selected").text();
+            var experiment = $("#Experiment option:selected").val();
+            var fingerprint = $("#Fingerprint option:selected").val();
+            $("#dataValue").text( fingerprintDescription + " and " + experimentDescription);
+            places = data[experiment - 1][fingerprint-1];
+            minTime = places[0].time;
+            maxTime = places[places.length - 1].time;
+            maxValueForSlider = (maxTime - minTime);
+
+            $( "#slider" ).slider({
+                range:false,
+                min: 0,
+                max: maxValueForSlider,
+                values: [0],
+                animate: "fast",
+                slide: function( event, ui ) {
+                    var value = ui.values[0];
+                    $("#slidevalue").text("Time: " + value);
+                    placeDot(places[value]);
+                },
+                slidechange: function( event, ui ) {
+                    var value = ui.values[0];
+                    $("#slidevalue").text("Time: " + value);
+                    placeDot(places[value]);
+                }
+            });
+        }
 
         function placeDot(dotToPlace){
             if(places[lastDotIndex + 1] == dotToPlace){
@@ -36,51 +77,45 @@
                     .attr("cy", function(d) { return d.y });
         }
 
-        $(function() {
-            $( "#slider" ).slider({
-                range:false,
-                min: 0,
-                max: maxVal,
-                values: [0],
-                animate: "fast",
-                slide: function( event, ui ) {
-                    var value = ui.values[0];
-                    $("#slidevalue").text("Value: " + value);
-                    placeDot(places[value]);
-                },
-                slidechange: function( event, ui ) {
-                    var value = ui.values[0];
-                    $("#slidevalue").text("Value: " + value);
-                    placeDot(places[value]);
-                }
-            });
-        });
-
-        var iFrequency = 1000; // expressed in miliseconds
-        var myInterval = 0;
-
-        // STARTS and Resets the loop if any
-        function startAnimation() {
+        function startAnimation(){
             if(myInterval > 0) clearInterval(myInterval);  // stop
             myInterval = setInterval( "runSlider()", iFrequency );  // run
         }
 
-        function runSlider()
-        {
+        function runSlider(){
             var value = $( "#slider" ).slider( "values", 0);
             var nextValue = value + 1;
-            if(nextValue >= maxVal){
+            if(nextValue >= maxValueForSlider){
                 stopAnimation();
             }
             $( "#slider" ).slider( "values", 0, nextValue );
-            $("#slidevalue").text("Value: " + nextValue);
+            $("#slidevalue").text("Time: " + nextValue);
             placeDot(nextValue);
         }
 
-        function stopAnimation() {
+        function stopAnimation(){
             if(myInterval > 0) clearInterval(myInterval);  // stop
         }
 
+        function resetAnimation(){
+            stopAnimation();
+            placeDot(0);
+            $( "#slider" ).slider( "values", 0, 0 );
+            $("#slidevalue").text("Time: 0");
+        }
+
+        function fasterAnimation(){
+            stopAnimation();
+            iFrequency = iFrequency / 2;
+            $("#speed").text("Currently updates at " + 1000/iFrequency + " hz.");
+            startAnimation();
+        }
+        function slowerAnimation(){
+            stopAnimation();
+            iFrequency = iFrequency * 2;
+            $("#speed").text("Currently updates at " + 1000/iFrequency + " hz.");
+            startAnimation();
+        }
     </script>
 </head>
 <body>
@@ -89,20 +124,45 @@
     <div class="jumbotron">
         <h1>Experiment</h1>
         <p>
-            This is a map of the points in the apartment which we have fingerprinted.
-            We need to make some cool visualization of our data.
-            I imagine some kind of bar with the time, and a dot on the map, showing  where the cat is at a given time.
+            This is visualization of the experiments we have done.
+            You can choose which experiment you want to see, and which fingerprints to calculate the positions from.
         </p>
+        <span>
+            <select id="Fingerprint">
+                <option value="">Choose fingerprint</option>
+                <option value="2">Base line</option>
+                <option value="1">Fingerprint 1</option>
+                <option value="1">Fingerprint 2</option>
+            </select>
+            <select id="Experiment">
+                <option value="">Choose experiment</option>
+                <% for(var i=0; i < dots.places.length; i++) { %>
+                    <option value="<%= (i + 1) %>">Experiment <%= (i + 1) %></option>
+                <% } %>
+            </select>
+        </span>
+        <span>
+            <button type="button" class="btn btn-primary" onclick="setData()">Choose</button>
+            <br>
+            <div id="dataValue"></div>
+        </span>
+        <br>
+
         <span>
             <button type="button" class="btn btn-primary" onclick="startAnimation()">Start</button>
             <button type="button" class="btn btn-primary" onclick="stopAnimation()">Stop</button>
-             <br>
+            <button type="button" class="btn btn-primary" onclick="resetAnimation()">Reset</button>
+            <button type="button" class="btn btn-primary" onclick="fasterAnimation()">Faster</button>
+            <button type="button" class="btn btn-primary" onclick="slowerAnimation()">Slower</button>
+            <div id="speed">Currently updates at 5 hz.</div>
+            <br>
         </span>
         <br>
+
         <div id="slider"></div>
-        <div id="slidevalue">
-            Value: 0
-        </div>
+        <div id="slidevalue" > </div>
+        <br>
+
         <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" onload="placeDot(places[0])"></svg>
     </div>
 </div>

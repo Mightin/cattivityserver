@@ -12,19 +12,18 @@ var Place = require('../models/place');
 var constants = require('../util/Constants');
 var Queue = require('../util/queue');
 
-var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
-var maxDifference = 10000;
-
 var locations = constants.locations;
 
-var places = [];
+var places;
 
+var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
+var maxDifference = 10000;
 var fingerPrintsAcquired = false;
 var fingerprints = [[]];
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    places = [];
+    places = [ [ [] ] ];
     var stream = Place.find({}).stream();
     stream.on('data', function (doc) {
         var placeID =  doc.placeID;
@@ -33,15 +32,19 @@ router.get('/', function(req, res, next) {
         dataPoint.time = Math.round(doc.time / 1000);
         dataPoint.values = doc.values;
         dataPoint.run = doc.run;
+        dataPoint.madeFromRun = doc.madeFromRun;
         dataPoint.x = locations[placeID - 1].x;
         dataPoint.y = locations[placeID - 1].y;
-        places.push(dataPoint);
+        if(doc.run > places.length){
+            places.push([])
+        }
+        if(doc.madeFromRun > places[(doc.run - 1)].length){
+            places[(doc.run - 1)].push([])
+        }
+        places[(doc.run - 1)][(doc.madeFromRun - 1)].push(dataPoint);
     }).on('error', function (err) {
         console.log(err);
     }).on('close', function () {
-        console.log(places[0]);
-        console.log(places[1]);
-        console.log(places[2]);
         res.render('pages/experiment', {dots: {places: places}});
     });
 

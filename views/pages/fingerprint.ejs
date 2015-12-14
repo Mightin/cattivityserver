@@ -15,15 +15,6 @@
         var experimentDescription = "This is just a normal fingerprinting. We have measured different points in the apartment";
         var baselineDescription = "This is a baseline experiment. We have measured an even grid, and have placed the beacon at different points, to measure the accuracy of bluetooth as a positioning technology."
 
-        function filterByRun(obj) {
-            if ('run' in obj && typeof(obj.run) === 'number' && !isNaN(obj.run)) {
-                return true;
-            } else {
-                invalidEntries++;
-                return false;
-            }
-        }
-
         function placeDots(run){
             var text = "";
             if(run == 2){
@@ -63,7 +54,6 @@
                 }
             }
             var data = locations.filter(filterByRun);
-            console.log(data);
 
             // place locations as blue circles
             svgContainer.selectAll()
