@@ -60,7 +60,7 @@
         }
 
         function placeDot(dotToPlace){
-            if(places[lastDotIndex + 1] == dotToPlace){
+            if((places[lastDotIndex + 1].time - minTime) == dotToPlace){
                 lastDotIndex = dotToPlace;
             }
             var svgContainer = d3.select(".floorplan-svg");
