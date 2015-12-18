@@ -20,75 +20,97 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
     <script>
-        var data = <%- JSON.stringify(dots.places) %>;
         var places;
         var minTime;
         var maxTime;
         var maxValueForSlider;
-        var lastDotIndex = 0;
+        var dotToPlaceIndex = 0;
         var iFrequency = 200; // expressed in miliseconds
         var myInterval = 0;
 
         function setData(){
-            var experimentDescription = $("#Experiment option:selected").text();
-            var fingerprintDescription = $("#Fingerprint option:selected").text();
-            var experiment = $("#Experiment option:selected").val();
-            var fingerprint = $("#Fingerprint option:selected").val();
-            $("#dataValue").text( fingerprintDescription + " and " + experimentDescription);
-            places = data[experiment - 1][fingerprint-1];
-            minTime = places[0].time;
-            maxTime = places[places.length - 1].time;
-            maxValueForSlider = (maxTime - minTime);
+            var experiment = $("#Experiment option:selected");
+            var experimentDescription = experiment.text();
+            var experimentNumber = experiment.val();
 
-            $( "#slider" ).slider({
-                range:false,
-                min: 0,
-                max: maxValueForSlider,
-                values: [0],
-                animate: "fast",
-                slide: function( event, ui ) {
-                    var value = ui.values[0];
-                    $("#slidevalue").text("Time: " + value);
-                    placeDot(places[value]);
-                },
-                slidechange: function( event, ui ) {
-                    var value = ui.values[0];
-                    $("#slidevalue").text("Time: " + value);
-                    placeDot(places[value]);
+            var fingerprint = $("#Fingerprint option:selected");
+            var fingerprintDescription = fingerprint.text();
+            var fingerprintNumber = fingerprint.val();
+
+            var url = "/place/" + fingerprintNumber + "/" + experimentNumber;
+            $.getJSON( url, function( data ) {
+                if(data == undefined){
+                    $("#dataValue").text( "Combination not available.");
+                } else {
+                    $("#dataValue").text( fingerprintDescription + " and " + experimentDescription);
+
+                    places = data;
+                    minTime = places[0].time;
+                    maxTime = places[places.length - 1].time;
+                    maxValueForSlider = (maxTime - minTime);
+
+                    console.log("minTime: " + minTime + " maxTime: " + maxTime + " maxValue: " + maxValueForSlider);
+
+                    $( "#slider" ).slider({
+                        range: false,
+                        min: 0,
+                        max: maxValueForSlider,
+                        values: [0],
+                        animate: "fast",
+                        slide: function(event, ui){
+                            var value = ui.values[0];
+                            $("#slidevalue").text("Time: " + value);
+                            placeDot(places[value]);
+                        },
+                        slidechange: function(event, ui){
+                            var value = ui.values[0];
+                            $("#slidevalue").text("Time: " + value);
+                            placeDot(places[value]);
+                        }
+                    });
+                    $("#slider").slider( "values", 0, 0 );
+                    $("#slidevalue").text("Time: " + 0);
+                    placeDot(0);
                 }
             });
+
         }
 
-        function placeDot(dotToPlace){
-            if((places[lastDotIndex + 1].time - minTime) == dotToPlace){
-                lastDotIndex = dotToPlace;
+        function placeDot(timeToPlace){
+            if(timeToPlace == 0){dotToPlaceIndex = 0;}
+            if(timeToPlace >= (places[places.length - 1].time - minTime)){
+                return;
+            } else {
+                if((places[dotToPlaceIndex + 1].time - minTime) <= timeToPlace){
+                    dotToPlaceIndex = dotToPlaceIndex + 1;
+                }
+                var svgContainer = d3.select(".floorplan-svg");
+                svgContainer.selectAll("*").remove();
+                var dot = [places[dotToPlaceIndex]];
+                // place locations as blue circles
+                svgContainer.selectAll()
+                        .data(dot).enter()
+                        .append("circle")
+                        .attr("fill", "blue")
+                        .attr("r", 10)
+                        .attr("cx", function(d){return d.x})
+                        .attr("cy", function(d){return d.y});
             }
-            var svgContainer = d3.select(".floorplan-svg");
-            svgContainer.selectAll("*").remove();
-            var dot = [places[lastDotIndex]];
-
-            // place locations as blue circles
-            svgContainer.selectAll()
-                    .data(dot).enter()
-                    .append("circle")
-                    .attr("fill", "blue")
-                    .attr("r", 10)
-                    .attr("cx", function(d) { return d.x })
-                    .attr("cy", function(d) { return d.y });
         }
 
         function startAnimation(){
             if(myInterval > 0) clearInterval(myInterval);  // stop
-            myInterval = setInterval( "runSlider()", iFrequency );  // run
+            myInterval = setInterval("runSlider()", iFrequency);  // run
+            $("#speed").text("Currently updates at " + 1000/iFrequency + " hz.");
         }
 
         function runSlider(){
-            var value = $( "#slider" ).slider( "values", 0);
+            var value = $("#slider").slider("values", 0);
             var nextValue = value + 1;
             if(nextValue >= maxValueForSlider){
                 stopAnimation();
             }
-            $( "#slider" ).slider( "values", 0, nextValue );
+            $("#slider").slider( "values", 0, nextValue );
             $("#slidevalue").text("Time: " + nextValue);
             placeDot(nextValue);
         }
@@ -100,20 +122,18 @@
         function resetAnimation(){
             stopAnimation();
             placeDot(0);
-            $( "#slider" ).slider( "values", 0, 0 );
+            $("#slider").slider("values", 0, 0);
             $("#slidevalue").text("Time: 0");
         }
 
         function fasterAnimation(){
             stopAnimation();
             iFrequency = iFrequency / 2;
-            $("#speed").text("Currently updates at " + 1000/iFrequency + " hz.");
             startAnimation();
         }
         function slowerAnimation(){
             stopAnimation();
             iFrequency = iFrequency * 2;
-            $("#speed").text("Currently updates at " + 1000/iFrequency + " hz.");
             startAnimation();
         }
     </script>
@@ -132,12 +152,12 @@
                 <option value="">Choose fingerprint</option>
                 <option value="2">Base line</option>
                 <option value="1">Fingerprint 1</option>
-                <option value="1">Fingerprint 2</option>
+                <option value="3">Fingerprint 2</option>
             </select>
             <select id="Experiment">
                 <option value="">Choose experiment</option>
-                <% for(var i=0; i < dots.places.length; i++) { %>
-                    <option value="<%= (i + 1) %>">Experiment <%= (i + 1) %></option>
+                <% for(var i=1; i < counts.experiments + 1; i++) { %>
+                    <option value="<%= i %>">Experiment <%= i %></option>
                 <% } %>
             </select>
         </span>
@@ -152,18 +172,19 @@
             <button type="button" class="btn btn-primary" onclick="startAnimation()">Start</button>
             <button type="button" class="btn btn-primary" onclick="stopAnimation()">Stop</button>
             <button type="button" class="btn btn-primary" onclick="resetAnimation()">Reset</button>
+            <button type="button" class="btn btn-primary" onclick="runSlider()">Next</button>
             <button type="button" class="btn btn-primary" onclick="fasterAnimation()">Faster</button>
             <button type="button" class="btn btn-primary" onclick="slowerAnimation()">Slower</button>
-            <div id="speed">Currently updates at 5 hz.</div>
+            <div id="speed"></div>
             <br>
         </span>
         <br>
 
         <div id="slider"></div>
-        <div id="slidevalue" > </div>
+        <div id="slidevalue"></div>
         <br>
 
-        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" onload="placeDot(places[0])"></svg>
+        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)"></svg>
     </div>
 </div>
 </body>

@@ -1,20 +1,15 @@
+var async = require('async');
 var express = require('express');
 var router = express.Router();
 
 var check = require("check-type").init();
 var d3 = require("d3");
-var moment = require('moment');
-moment().format();
 
 var Fingerprint = require('../models/fingerprint');
 var Experiment = require('../models/experiment');
 var Place = require('../models/place');
-var constants = require('../util/Constants');
+
 var Queue = require('../util/queue');
-
-var locations = constants.locations;
-
-var places;
 
 var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
 var maxDifference = 10000;
@@ -23,31 +18,36 @@ var fingerprints = [[]];
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    places = [ [ [] ] ];
-    var stream = Place.find({}).stream();
-    stream.on('data', function (doc) {
-        var placeID =  doc.placeID;
-        var dataPoint = {};
-        dataPoint.placeID = placeID;
-        dataPoint.time = Math.round(doc.time / 1000);
-        dataPoint.values = doc.values;
-        dataPoint.run = doc.run;
-        dataPoint.madeFromRun = doc.madeFromRun;
-        dataPoint.x = locations[placeID - 1].x;
-        dataPoint.y = locations[placeID - 1].y;
-        if(doc.run > places.length){
-            places.push([])
-        }
-        if(doc.madeFromRun > places[(doc.run - 1)].length){
-            places[(doc.run - 1)].push([])
-        }
-        places[(doc.run - 1)][(doc.madeFromRun - 1)].push(dataPoint);
-    }).on('error', function (err) {
-        console.log(err);
-    }).on('close', function () {
-        res.render('pages/experiment', {dots: {places: places}});
-    });
+    var fingerprints = 0;
+    var experiments = 0;
 
+    async.parallel([
+            function(callback){
+                Fingerprint.distinct('run').exec(function (err, runs) {
+                    if(err){
+                        return callback(err);
+                    }
+                    fingerprints = runs.length;
+                    callback();
+                });
+            },
+            function(callback) {
+                Experiment.distinct('run').exec(function (err, runs) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    experiments = runs.length;
+                    callback();
+                });
+            }
+        ], function(err){
+            if(err){throw err;}
+            res.render('pages/experiment', {counts : {
+                fingerprints: fingerprints,
+                experiments: experiments
+            }});
+        }
+    );
 });
 
 /* POST home page. */

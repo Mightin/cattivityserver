@@ -10,6 +10,7 @@ var index = require('./routes/index');
 var about = require('./routes/about');
 var fingerprint = require('./routes/fingerprint');
 var experiment = require('./routes/experiment');
+var place = require('./routes/place');
 
 var app = express();
 
@@ -36,6 +37,7 @@ app.use('/', index);
 app.use('/about', about);
 app.use('/fingerprint', fingerprint);
 app.use('/experiment', experiment);
+app.use('/place', place);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
