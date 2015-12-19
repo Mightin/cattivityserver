@@ -9,7 +9,8 @@ var placeSchema = new Schema({
     time: Number,
     values: [Number],
     run: Number,
-    madeFromRun: Number
+    madeFromRun: Number,
+    algorithm: Number
 });
 
 // the schema is useless so far
