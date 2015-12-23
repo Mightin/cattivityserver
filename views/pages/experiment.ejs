@@ -29,15 +29,17 @@
         var myInterval = 0;
 
         function setData(){
-            var experiment = $("#Experiment option:selected");
-            var experimentDescription = experiment.text();
-            var experimentNumber = experiment.val();
-
             var fingerprint = $("#Fingerprint option:selected");
             var fingerprintDescription = fingerprint.text();
             var fingerprintNumber = fingerprint.val();
 
-            var url = "/place/" + fingerprintNumber + "/" + experimentNumber;
+            var experiment = $("#Experiment option:selected");
+            var experimentDescription = experiment.text();
+            var experimentNumber = experiment.val();
+
+            var algorithmNumber = 1;
+
+            var url = "/place/" + fingerprintNumber + "/" + experimentNumber + "/" + algorithmNumber;
             $.getJSON( url, function( data ) {
                 if(data == undefined){
                     $("#dataValue").text( "Combination not available.");

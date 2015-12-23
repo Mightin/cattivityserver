@@ -11,19 +11,21 @@ var locations = constants.locations;
 var places;
 
 /* GET home page. */
-router.get('/:madeFromRun/:experimentnr', function(req, res, next) {
+router.get('/:madeFromRun/:experimentnr/:algorithmnr', function(req, res, next) {
     var madeFromRun = req.params.madeFromRun;
     var run = req.params.experimentnr;
+    var algorithm = req.params.algorithmnr;
     places = [ ];
-    var stream = Place.find({run: run, madeFromRun: madeFromRun}).stream();
+    var stream = Place.find({run: run, madeFromRun: madeFromRun, algorithm: algorithm}).stream();
     stream.on('data', function (doc) {
         var placeID =  doc.placeID;
         var dataPoint = {};
         dataPoint.placeID = placeID;
         dataPoint.time = Math.round(doc.time / 1000);
         dataPoint.values = doc.values;
-        dataPoint.run = doc.run;
         dataPoint.madeFromRun = doc.madeFromRun;
+        dataPoint.run = doc.run;
+        dataPoint.algortim = doc.algorithm;
         dataPoint.x = locations[placeID - 1].x;
         dataPoint.y = locations[placeID - 1].y;
         places.push(dataPoint);
