@@ -9,39 +9,13 @@ var Fingerprint = require('../models/fingerprint');
 var constants = require('../util/Constants.js')
 
 var phones = constants.phones;
+var phonesForBaseline = constants.phonesForBaseline;
 var locations = constants.locations;
-
+var numberOfMeasurement = 7;
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    var numberOfFingerprints = 0;
-
-    async.parallel([
-            function(callback){
-                Fingerprint.distinct('run').exec(function (err, runs) {
-                    if(err){
-                        return callback(err);
-                    }
-                    numberOfFingerprints = runs.length;
-                    callback();
-                });
-            }
-        ], function(err){
-            if(err){throw err;}
-            res.render('pages/fingerprint',
-                {
-                    numberOfFingerprints: numberOfFingerprints,
-                    phones: phones
-                }
-            );
-        }
-    );
-});
-
-/* GET fingerprint data. */
-router.get('/:fingerprintnr', function(req, res, next) {
-    var fingerprintnr = req.params.fingerprintnr;
     var data = [];
-    var stream = Fingerprint.find({run: fingerprintnr}).stream();
+    var stream = Fingerprint.find({}).stream();
     stream.on('data', function (doc) {
         var index = doc.placeID - 1;
         var dataPoint = {};
@@ -49,23 +23,21 @@ router.get('/:fingerprintnr', function(req, res, next) {
         dataPoint.x = locations[index].x;
         dataPoint.y = locations[index].y;
         dataPoint.placeID = doc.placeID;
-        dataPoint.averages = doc.averages;
-        dataPoint.phonesValues = doc.phonesValues;
+        dataPoint.values = doc.values;
+        dataPoint.measuredValues = doc.measuredValues;
         dataPoint.run = doc.run;
         data.push(dataPoint);
     }).on('error', function (err) {
         console.log(err);
     }).on('close', function () {
-        res.writeHeader(200, {"Content-Type": "application/json"});
-        res.write(JSON.stringify(data));
-        res.end();
+        res.render('pages/fingerprint', {dots: { phones: phones, phonesForBaseline: phonesForBaseline, locations: data}});
     });
 });
 
 /* POST home page. */
 router.post('/', function(req, res, next) {
     if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('placeID') && req.body.hasOwnProperty('run') &&
-       check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.placeID).is("number") && check(req.body.run).is("number") ){
+        check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.placeID).is("number") && check(req.body.run).is("number") ){
 
         postFingerprint(req, res);
 
@@ -77,22 +49,22 @@ router.post('/', function(req, res, next) {
 });
 
 function postFingerprint(req, res){
-    var index = req.body.phoneID - 1;
     Fingerprint.findOne({placeID: req.body.placeID, run: req.body.run}, function(err, element) {
         if(err) throw err;
         var avg = d3.mean(req.body.values);
 
         // Element already exists
         if(element != null){
-            var newAvgs = element.averages;
-            newAvgs[index] = avg;
-            var newPhoneVals = element.phoneValues;
-            newPhoneVals[index].values = req.body.values;
+            var index = req.body.phoneID - 1;
+            var newVals = element.values;
+            newVals[index] = avg;
+            var newMeasured = element.measuredValues;
+            for(var i = 0; i < numberOfMeasurement; i++){
+                newMeasured[(index * numberOfMeasurement) + i] = req.body.values[i];
+            }
             Fingerprint.findOneAndUpdate({placeID: req.body.placeID, run: req.body.run},
-                {
-                    averages: newAvgs,
-                    phoneValues: newPhoneVals
-                },
+                {values: newVals,
+                    measuredValues: newMeasured},
                 function (err, element) {
                     if (err) throw err;
                     res.status(200);
@@ -102,16 +74,18 @@ function postFingerprint(req, res){
             );
 
         } else {
-            var newAvgs = [0,0,0];
-            newAvgs[index] = avg;
-            var phoneVals = [{values: [0]}, {values: [0]}, {values: [0]}];
-            phoneVals[index].values = req.body.values;
-
+            var index = req.body.phoneID - 1;
+            var newVals = [0, 0, 0];
+            newVals[index] = avg;
+            var newMeasured = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            for(var i = 0; i < numberOfMeasurement; i++){
+                newMeasured[(index * numberOfMeasurement) + i] = req.body.values[i];
+            }
             var newFingerprint = Fingerprint({
                 placeID: req.body.placeID,
-                run: req.body.run,
-                averages: newAvgs,
-                phoneValues: phoneVals
+                values: newVals,
+                measuredValues: newMeasured,
+                run: req.body.run
             });
 
             newFingerprint.save(function (err) {

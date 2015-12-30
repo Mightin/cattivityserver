@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 //routes
 var index = require('./routes/index');
 var about = require('./routes/about');
+var baseline = require('./routes/baseline');
 var fingerprint = require('./routes/fingerprint');
 var experiment = require('./routes/experiment');
 var place = require('./routes/place');
@@ -35,6 +36,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 // routing
 app.use('/', index);
 app.use('/about', about);
+app.use('/baseline', baseline);
 app.use('/fingerprint', fingerprint);
 app.use('/experiment', experiment);
 app.use('/place', place);

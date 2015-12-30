@@ -6,9 +6,9 @@ var Schema = mongoose.Schema;
 // create a schema
 var fingerprintSchema = new Schema({
     placeID: Number,
-    values: [Number], // this should have been called averages
-    measuredValues: [Number],
-    run: Number
+    run: Number,
+    averages: [Number],
+    phoneValues: [{values: [Number]}]
 });
 
 // the schema is useless so far
