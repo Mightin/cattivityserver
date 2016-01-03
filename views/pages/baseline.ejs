@@ -101,7 +101,7 @@
         <h1>Baseline</h1>
         <p>This is a baseline experiment. We have measured an even grid, and have placed the beacon at different points, to measure the accuracy of bluetooth as a positioning technology.</p>
         <span>
-            <select id="Baselines">
+            <select id="Baseline">
                 <option value="">Choose baseline</option>
                 <% for(var i=1; i < numberOfBaselines + 1; i++) { %>
                 <option value="<%= i %>">Baseline <%= i %></option>
@@ -110,7 +110,7 @@
             <button type="button" class="btn btn-primary" onclick="placeDots()">Draw</button>
         </span>
         <p id="description"></p>
-        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)"  onload="placePhones()">
+        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" onload="placePhones()">
         </svg>
     </div>
 </div>

@@ -35,7 +35,7 @@
         var fingerprint = $("#Fingerprint option:selected");
         var fingerprintDescription = fingerprint.text();
         var fingerprintNumber = fingerprint.val();
-        $("#fingerprintDescription").text( fingerprintDescription + " and " + fingerprintNumber);
+        $("#fingerprintDescription").text( fingerprintDescription);
 
         var url = "/fingerprint/" + fingerprintNumber;
         $.getJSON( url, function( dataFromServer ){

@@ -9,6 +9,7 @@ var Baseline = require('../models/baseline');
 var constants = require('../util/Constants.js')
 
 var phonesForBaseline = constants.phonesForBaseline;
+var locations = constants.locations;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -34,6 +35,31 @@ router.get('/', function(req, res, next) {
             );
         }
     );
+});
+
+/* GET baseline data. */
+router.get('/:baselinenr', function(req, res, next) {
+    var baselinenr = req.params.baselinenr;
+    var data = [];
+    var stream = Baseline.find({run: baselinenr}).stream();
+    stream.on('data', function (doc) {
+        var index = doc.placeID - 1;
+        var dataPoint = {};
+        dataPoint.place = locations[index].place;
+        dataPoint.x = locations[index].x;
+        dataPoint.y = locations[index].y;
+        dataPoint.placeID = doc.placeID;
+        dataPoint.averages = doc.averages;
+        dataPoint.phonesValues = doc.phonesValues;
+        dataPoint.run = doc.run;
+        data.push(dataPoint);
+    }).on('error', function (err) {
+        console.log(err);
+    }).on('close', function () {
+        res.writeHeader(200, {"Content-Type": "application/json"});
+        res.write(JSON.stringify(data));
+        res.end();
+    });
 });
 
 /* POST home page. */
