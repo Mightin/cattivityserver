@@ -9,7 +9,7 @@ var Baseline = require('../models/baseline');
 var constants = require('../util/Constants.js')
 
 var phonesForBaseline = constants.phonesForBaseline;
-var locations = constants.locations;
+var locations = constants.locationsForBaseline;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
