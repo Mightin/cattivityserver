@@ -5,33 +5,18 @@ var async = require('async');
 var router = express.Router();
 var check = require("check-type").init();
 
-var Fingerprint = require('../models/fingerprint');
+var Baseline = require('../models/baseline');
 var constants = require('../util/Constants.js')
 
-var phones = constants.phones;
 var phonesForBaseline = constants.phonesForBaseline;
-var locations = constants.locations;
-var numberOfMeasurement = 7;
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    var data = [];
-    var stream = Fingerprint.find({}).stream();
-    stream.on('data', function (doc) {
-        var index = doc.placeID - 1;
-        var dataPoint = {};
-        dataPoint.place = locations[index].place;
-        dataPoint.x = locations[index].x;
-        dataPoint.y = locations[index].y;
-        dataPoint.placeID = doc.placeID;
-        dataPoint.values = doc.values;
-        dataPoint.measuredValues = doc.measuredValues;
-        dataPoint.run = doc.run;
-        data.push(dataPoint);
-    }).on('error', function (err) {
-        console.log(err);
-    }).on('close', function () {
-        res.render('pages/fingerprint', {dots: { phones: phones, phonesForBaseline: phonesForBaseline, locations: data}});
-    });
+        res.render('pages/baseline',
+            {
+                numberOfBaselines: 2,
+                phones: phonesForBaseline
+            }
+        );
 });
 
 /* POST home page. */
@@ -39,7 +24,7 @@ router.post('/', function(req, res, next) {
     if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('placeID') && req.body.hasOwnProperty('run') &&
         check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.placeID).is("number") && check(req.body.run).is("number") ){
 
-        postFingerprint(req, res);
+        postBaseline(req, res);
 
     } else {
         res.status(400);
@@ -48,51 +33,49 @@ router.post('/', function(req, res, next) {
     }
 });
 
-function postFingerprint(req, res){
-    Fingerprint.findOne({placeID: req.body.placeID, run: req.body.run}, function(err, element) {
+function postBaseline(req, res){
+    var index = req.body.phoneID - 1;
+    Baseline.findOne({placeID: req.body.placeID, run: req.body.run}, function(err, element) {
         if(err) throw err;
         var avg = d3.mean(req.body.values);
 
         // Element already exists
         if(element != null){
-            var index = req.body.phoneID - 1;
-            var newVals = element.values;
-            newVals[index] = avg;
-            var newMeasured = element.measuredValues;
-            for(var i = 0; i < numberOfMeasurement; i++){
-                newMeasured[(index * numberOfMeasurement) + i] = req.body.values[i];
-            }
-            Fingerprint.findOneAndUpdate({placeID: req.body.placeID, run: req.body.run},
-                {values: newVals,
-                    measuredValues: newMeasured},
+            var newAvgs = element.averages;
+            newAvgs[index] = avg;
+            var newPhoneVals = element.phoneValues;
+            newPhoneVals[index].values = req.body.values;
+            Baseline.findOneAndUpdate({placeID: req.body.placeID, run: req.body.run},
+                {
+                    averages: newAvgs,
+                    phoneValues: newPhoneVals
+                },
                 function (err, element) {
                     if (err) throw err;
                     res.status(200);
                     res.send('POST request to the homepage successful');
-                    console.log('Update of fingerprint was successful!');
+                    console.log('Update of baseline was successful!');
                 }
             );
 
         } else {
-            var index = req.body.phoneID - 1;
-            var newVals = [0, 0, 0];
-            newVals[index] = avg;
-            var newMeasured = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-            for(var i = 0; i < numberOfMeasurement; i++){
-                newMeasured[(index * numberOfMeasurement) + i] = req.body.values[i];
-            }
-            var newFingerprint = Fingerprint({
+            var newAvgs = [0,0,0];
+            newAvgs[index] = avg;
+            var phoneVals = [{values: [0]}, {values: [0]}, {values: [0]}];
+            phoneVals[index].values = req.body.values;
+
+            var newBaseline = Baseline({
                 placeID: req.body.placeID,
-                values: newVals,
-                measuredValues: newMeasured,
-                run: req.body.run
+                run: req.body.run,
+                averages: newAvgs,
+                phoneValues: phoneVals
             });
 
-            newFingerprint.save(function (err) {
+            newBaseline.save(function (err) {
                 if (err) throw err;
                 res.status(200);
                 res.send('POST request to the homepage successful');
-                console.log('Saving fingerprint was successful!');
+                console.log('Saving baseline was successful!');
             });
         }
     })

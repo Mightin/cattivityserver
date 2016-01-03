@@ -42,7 +42,7 @@
             if (data == undefined) {
                 $("#fingerprintDescription").text("Fingerpritns not available");
             } else {
-                $("#fingerprintDescription").text(fingerprintDescription + " and " + fingerprintDescription);
+                $("#fingerprintDescription").text(fingerprintDescription);
                 data = dataFromServer;
 
                 var svgContainer = d3.select(".floorplan-svg");

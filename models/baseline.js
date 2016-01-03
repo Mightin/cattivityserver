@@ -6,11 +6,9 @@ var Schema = mongoose.Schema;
 // create a schema
 var baselineSchema = new Schema({
     placeID: Number,
-    values: [Number], // this should have been called averages
-    phone1values: [Number],
-    phone2values: [Number],
-    phone3values: [Number],
-    run: Number
+    run: Number,
+    averages: [Number],
+    phoneValues: [{values: [Number]}]
 });
 
 // the schema is useless so far

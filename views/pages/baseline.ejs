@@ -11,28 +11,14 @@
 <body>
 <% include ../partials/header %>
 <script>
-    var phones = <%- JSON.stringify(dots.phones ) %>;
-    var phonesForBaseline = <%- JSON.stringify(dots.phonesForBaseline ) %>;
-    var locations = <%- JSON.stringify(dots.locations) %>;
-    var phonesData = [];
-    var baselineDescription = "This is a baseline experiment. We have measured an even grid, and have placed the beacon at different points, to measure the accuracy of bluetooth as a positioning technology."
+    var phones = <%- JSON.stringify(phones) %>;
+    var data = [];
 
-    function placeDots(run){
-        var text = "";
-        if(run == 2){
-            phonesData = phonesForBaseline;
-            text = baselineDescription;
-        } else {
-            phonesData = phones;
-            text = experimentDescription;
-        }
-        $("#description").text(text);
+    // place phones as red rectangles
+    function placePhones() {
         var svgContainer = d3.select(".floorplan-svg");
-        svgContainer.selectAll("*").remove();
-
-        // place phones as red rectangles
         svgContainer.selectAll()
-                .data(phonesData).enter()
+                .data(phones).enter()
                 .append("rect")
                 .attr("fill", "red")
                 .attr("width", 10)
@@ -47,47 +33,88 @@
                 return tip;
             }
         });
+    }
 
-        function filterByRun(obj) {
-            if ('run' in obj && typeof(obj.run) === 'number' && !isNaN(obj.run) && obj.run === run) {
-                return true;
+    function placeDots(){
+        var baseline = $("#Baseline option:selected");
+        var baselineDescription = baseline.text();
+        var baselineNumber = baseline.val();
+        $("#baselineDescription").text( baselineDescription + " and " + baselineNumber);
+
+        var url = "/baseline/" + baselineNumber;
+        $.getJSON( url, function( dataFromServer ){
+            if (data == undefined) {
+                $("#baselineDescription").text("Baseline not available");
             } else {
-                return false;
-            }
-        }
-        var data = locations.filter(filterByRun);
+                $("#baselineDescription").text(baselineDescription);
+                data = dataFromServer;
 
-        // place locations as blue circles
-        svgContainer.selectAll()
-                .data(data).enter()
-                .append("circle")
-                .attr("fill", "blue")
-                .attr("r", 10)
-                .attr("cx", function(d) { return d.x })
-                .attr("cy", function(d) { return d.y })
-                .classed("locations",true);
-        $('svg circle').tipsy({
-            html: true,
-            title: function() {
-                var d = this.__data__;
-                var tip = "Location: " + d.place + ", ID: " + d.placeID + ", Phone 1: " + d.values[0].toFixed(2) + ", Phone 2: " + d.values[1].toFixed(2) + ", Phone 3: " + d.values[2].toFixed(2);
-                return tip;
+                var svgContainer = d3.select(".floorplan-svg");
+                svgContainer.selectAll("*").remove();
+
+                // place phones as red rectangles
+                svgContainer.selectAll()
+                        .data(phones).enter()
+                        .append("rect")
+                        .attr("fill", "red")
+                        .attr("width", 10)
+                        .attr("height", 10)
+                        .attr("x", function (e) {
+                            return e.x
+                        })
+                        .attr("y", function (e) {
+                            return e.y
+                        });
+                $('svg rect').tipsy({
+                    html: true,
+                    title: function () {
+                        var e = this.__data__;
+                        var tip = "Location: " + e.place + ", ID: " + e.id;
+                        return tip;
+                    }
+                });
+
+                // place locations as blue circles
+                svgContainer.selectAll()
+                        .data(dataFromServer).enter()
+                        .append("circle")
+                        .attr("fill", "blue")
+                        .attr("r", 10)
+                        .attr("cx", function (d) {
+                            return d.x
+                        })
+                        .attr("cy", function (d) {
+                            return d.y
+                        })
+                        .classed("locations", true);
+                $('svg circle').tipsy({
+                    html: true,
+                    title: function () {
+                        var d = this.__data__;
+                        var tip = "Location: " + d.place + ", ID: " + d.placeID + ", Phone 1: " + d.averages[0].toFixed(2) + ", Phone 2: " + d.averages[1].toFixed(2) + ", Phone 3: " + d.averages[2].toFixed(2);
+                        return tip;
+                    }
+                });
             }
-        });
+        })
     }
 </script>
 
 <div class="container">
     <div class="jumbotron">
-        <h1>Fingerprint</h1>
-        <p>This is a map of the points in the apartment which we have fingerprinted. Hovering on a point shows the average RSSI-values for the 3 beacons.</p>
+        <h1>Baseline</h1>
+        <p>This is a baseline experiment. We have measured an even grid, and have placed the beacon at different points, to measure the accuracy of bluetooth as a positioning technology.</p>
         <span>
-            <button type="button" class="btn btn-primary" onclick="placeDots(2)">Baseline</button>
-            <button type="button" class="btn btn-primary" onclick="placeDots(1)">First</button>
-            <button type="button" class="btn btn-primary" onclick="placeDots(3)">Second</button>
+            <select id="Baselines">
+                <option value="">Choose baseline</option>
+                <% for(var i=1; i < numberOfBaselines + 1; i++) { %>
+                <option value="<%= i %>">Baseline <%= i %></option>
+                <% } %>
+            </select>
+            <button type="button" class="btn btn-primary" onclick="placeDots()">Draw</button>
         </span>
         <p id="description"></p>
-        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)"  onload="placeDots(2)">
+        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" >
         </svg>
     </div>
 </div>
