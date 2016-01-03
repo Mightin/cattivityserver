@@ -3,15 +3,15 @@
  */
 
 var phones = [
-    {place: "Kitchen", id: 1, x: 230, y: 175},
-    {place: "Livingroom", id: 2, x: 700, y: 80},
-    {place: "Bedroom", id: 3, x: 560, y: 530}
+    {place: "Kitchen", id: 0, x: 230, y: 175},
+    {place: "Livingroom", id: 1, x: 700, y: 80},
+    {place: "Bedroom", id: 2, x: 560, y: 530}
 ];
 
 var phonesForBaseline = [
-    {place: "TV", id: 1, x: 510, y: 207},
-    {place: "Comp", id: 2, x: 722, y: 131},
-    {place: "Corner", id: 3, x: 722, y: 330}
+    {place: "TV", id: 0, x: 510, y: 207},
+    {place: "Comp", id: 1, x: 722, y: 131},
+    {place: "Corner", id: 2, x: 722, y: 330}
 ];
 
 var locations = [

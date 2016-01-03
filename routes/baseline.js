@@ -9,14 +9,31 @@ var Baseline = require('../models/baseline');
 var constants = require('../util/Constants.js')
 
 var phonesForBaseline = constants.phonesForBaseline;
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-        res.render('pages/baseline',
-            {
-                numberOfBaselines: 2,
-                phones: phonesForBaseline
+    var numberOfBaselines = 0;
+
+    async.parallel([
+            function(callback){
+                Baseline.distinct('run').exec(function (err, runs) {
+                    if(err){
+                        return callback(err);
+                    }
+                    numberOfBaselines = runs.length;
+                    callback();
+                });
             }
-        );
+        ], function(err){
+            if(err){throw err;}
+            res.render('pages/baseline',
+                {
+                    numberOfBaselines: numberOfBaselines,
+                    phones: phonesForBaseline
+                }
+            );
+        }
+    );
 });
 
 /* POST home page. */
@@ -34,7 +51,7 @@ router.post('/', function(req, res, next) {
 });
 
 function postBaseline(req, res){
-    var index = req.body.phoneID - 1;
+    var index = req.body.phoneID;
     Baseline.findOne({placeID: req.body.placeID, run: req.body.run}, function(err, element) {
         if(err) throw err;
         var avg = d3.mean(req.body.values);

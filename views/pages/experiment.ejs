@@ -132,9 +132,9 @@
         <span>
             <select id="Fingerprint">
                 <option value="">Choose fingerprint</option>
-                <option value="2">Base line</option>
-                <option value="1">Fingerprint 1</option>
-                <option value="3">Fingerprint 2</option>
+                <% for(var i=1; i < counts.experiments + 1; i++) { %>
+                <option value="<%= i %>">Fingerprint <%= i %></option>
+                <% } %>
             </select>
             <select id="Experiment">
                 <option value="">Choose experiment</option>

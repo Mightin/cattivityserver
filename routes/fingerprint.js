@@ -77,7 +77,7 @@ router.post('/', function(req, res, next) {
 });
 
 function postFingerprint(req, res){
-    var index = req.body.phoneID - 1;
+    var index = req.body.phoneID;
     Fingerprint.findOne({placeID: req.body.placeID, run: req.body.run}, function(err, element) {
         if(err) throw err;
         var avg = d3.mean(req.body.values);

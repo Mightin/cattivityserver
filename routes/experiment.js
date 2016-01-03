@@ -62,9 +62,9 @@ router.post('/', function(req, res, next) {
         }
         // save the data
         saveExperiment(item);
-
+        var index = item.phoneID;
         // store the item, at the correct phone
-        valuesFromPhones[item.phoneID - 1].enqueue(item);
+        valuesFromPhones[index].enqueue(item);
         // if there isn't enough data
         if(valuesFromPhones[0].isEmpty() || valuesFromPhones[1].isEmpty() || valuesFromPhones[2].isEmpty()){
             res.status(200);
