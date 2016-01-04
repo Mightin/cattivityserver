@@ -43,7 +43,7 @@ router.get('/:baselinenr', function(req, res, next) {
     var data = [];
     var stream = Baseline.find({run: baselinenr}).stream();
     stream.on('data', function (doc) {
-        var index = doc.placeID - 1;
+        var index = doc.placeID;
         var dataPoint = {};
         dataPoint.place = locations[index].place;
         dataPoint.x = locations[index].x;
