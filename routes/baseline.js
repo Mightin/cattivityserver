@@ -43,15 +43,13 @@ router.get('/:baselinenr', function(req, res, next) {
     var data = [];
     var stream = Baseline.find({run: baselinenr}).stream();
     stream.on('data', function (doc) {
-        var index = doc.placeID;
         var dataPoint = {};
-        dataPoint.place = locations[index].place;
-        dataPoint.x = locations[index].x;
-        dataPoint.y = locations[index].y;
-        dataPoint.placeID = doc.placeID;
+        dataPoint.place = "" + doc.x + "," + doc.y;
         dataPoint.averages = doc.averages;
         dataPoint.phonesValues = doc.phonesValues;
         dataPoint.run = doc.run;
+        dataPoint.x = doc.x;
+        dataPoint.y = doc.y;
         data.push(dataPoint);
     }).on('error', function (err) {
         console.log(err);
@@ -64,8 +62,8 @@ router.get('/:baselinenr', function(req, res, next) {
 
 /* POST home page. */
 router.post('/', function(req, res, next) {
-    if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('placeID') && req.body.hasOwnProperty('run') &&
-        check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.placeID).is("number") && check(req.body.run).is("number") ){
+    if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('run') && req.body.hasOwnProperty('x') && req.body.hasOwnProperty('y') &&
+        check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.run).is("number") && check(req.body.x).is("number") && check(req.body.y).is("number") ){
 
         postBaseline(req, res);
 
@@ -78,7 +76,7 @@ router.post('/', function(req, res, next) {
 
 function postBaseline(req, res){
     var index = req.body.phoneID;
-    Baseline.findOne({placeID: req.body.placeID, run: req.body.run}, function(err, element) {
+    Baseline.findOne({x: req.body.x, y: req.body.y, run: req.body.run}, function(err, element) {
         if(err) throw err;
         var avg = d3.mean(req.body.values);
 
@@ -108,10 +106,11 @@ function postBaseline(req, res){
             phoneVals[index].values = req.body.values;
 
             var newBaseline = Baseline({
-                placeID: req.body.placeID,
                 run: req.body.run,
                 averages: newAvgs,
-                phoneValues: phoneVals
+                phoneValues: phoneVals,
+                x: req.body.x,
+                y: req.body.y
             });
 
             newBaseline.save(function (err) {

@@ -75,11 +75,17 @@ var locations = [
     {place: "Bedroom 3,0", placeID: 53, x: 807, y: 469}
 ];
 
-var phonesForBaseline = [
+var phonesForBaselineOLD = [
     {place: "TV", id: 0, x: 510, y: 207},
     {place: "Comp", id: 1, x: 722, y: 131},
     {place: "Corner", id: 2, x: 722, y: 330}
 ];
+
+var phonesForBaseline = [
+    {place: "Top left", x: 0, y: 0},
+    {place: "Top right", x: 500, y:0},
+    {place: "Bottom middle", x: 250, y:500}
+]
 
 var locationsForBaseline = [
     {place: "0,3", placeID: 0, x: 574, y: 182},

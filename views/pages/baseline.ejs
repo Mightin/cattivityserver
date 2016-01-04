@@ -53,12 +53,8 @@
                         .attr("fill", "red")
                         .attr("width", 10)
                         .attr("height", 10)
-                        .attr("x", function (e) {
-                            return e.x
-                        })
-                        .attr("y", function (e) {
-                            return e.y
-                        });
+                        .attr("x", function (e) { return e.x })
+                        .attr("y", function (e) { return e.y });
                 $('svg rect').tipsy({
                     html: true,
                     title: function () {
@@ -85,7 +81,7 @@
                     html: true,
                     title: function () {
                         var d = this.__data__;
-                        var tip = "Location: " + d.place + ", ID: " + d.placeID + ", Phone 1: " + d.averages[0].toFixed(2) + ", Phone 2: " + d.averages[1].toFixed(2) + ", Phone 3: " + d.averages[2].toFixed(2);
+                        var tip = "Location: " + d.place + ", Phone 1: " + d.averages[0].toFixed(2) + ", Phone 2: " + d.averages[1].toFixed(2) + ", Phone 3: " + d.averages[2].toFixed(2);
                         return tip;
                     }
                 });
@@ -140,7 +136,7 @@
             <button type="button" class="btn btn-primary" onclick="placeDots()">Draw</button>
         </span>
         <p id="baselineDescription"></p>
-        <svg class="floorplan-svg" height="590" width="1000" style="background-color: lightgrey" onload="placePhones()">
+        <svg class="floorplan-svg" height="510" width="510" style="background-color: lightgrey" onload="placePhones()">
         </svg>
         <div id="visualize">
             <span>

@@ -8,7 +8,9 @@ var baselineSchema = new Schema({
     placeID: Number,
     run: Number,
     averages: [Number],
-    phoneValues: [{values: [Number]}]
+    phoneValues: [{values: [Number]}],
+    x: Number,
+    y: Number
 });
 
 // the schema is useless so far
