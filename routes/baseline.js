@@ -86,7 +86,7 @@ function postBaseline(req, res){
             newAvgs[index] = avg;
             var newPhoneVals = element.phoneValues;
             newPhoneVals[index].values = req.body.values;
-            Baseline.findOneAndUpdate({placeID: req.body.placeID, run: req.body.run},
+            Baseline.findOneAndUpdate({x: req.body.x, y: req.body.y, run: req.body.run},
                 {
                     averages: newAvgs,
                     phoneValues: newPhoneVals
