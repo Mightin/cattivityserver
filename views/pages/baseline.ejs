@@ -32,6 +32,8 @@
     }
 
     function placeDots(){
+        removeOldPhoneVisualization();
+
         var baseline = $("#Baseline option:selected");
         var baselineDescription = baseline.text();
         var baselineNumber = baseline.val();
@@ -89,37 +91,96 @@
         })
     }
 
+    function removeOldPhoneVisualization() {
+        var oldTbl = document.getElementById("visualizationTable");
+        if (oldTbl) oldTbl.parentNode.removeChild(oldTbl);
+        $("#phoneDescription").text("Choose a phone to see the measured values visualized.");
+    }
+
     function visualizePhoneData(phoneNumber){
         if(data.length == 0){
             $("#phoneDescription").text("Please choose a baseline");
             return;
         }
-        var oldTbl = document.getElementById("visualizationTable");
-        if(oldTbl) oldTbl.parentNode.removeChild(oldTbl);
+        removeOldPhoneVisualization();
 
         var tbl  = document.createElement('table');
         tbl.id = "visualizationTable";
         tbl.style.width  = '100px';
         tbl.style.border = '1px solid black';
 
+        var domain = findDomain();
+
         var color = d3.scale.linear()
-                .domain([-30, -111])
+                .domain(domain)
                 .range(["cyan", "yellow"]);
 
-        var index = 0;
-        for(var i = 0; i < 1; i++){
+       var xs = getDistinctXs();
+       var ys = getDistinctYs();
+
+        for(var y = 0; y < ys.length; y++){
             var tr = tbl.insertRow();
-            for(var j = 0; j < 2; j++){
+            for(var x = 0; x < xs.length; x++){
                 var td = tr.insertCell();
-                td.appendChild(document.createTextNode("Place: " + data[index].place + ", value: " + data[index].averages[phoneNumber].toFixed(2)));
-                td.style.border = '1px solid black';
-                td.style.backgroundColor = color(data[index].averages[phoneNumber])
-                index++;
+                var dataPoint = findDataPoint(xs[x], ys[y]);
+                if(dataPoint === undefined){
+                    td.appendChild(document.createTextNode(" No data "));
+                    td.style.border = '1px solid black';
+                } else {
+                    td.appendChild(document.createTextNode("Place: " + dataPoint.place + ", value: " + dataPoint.averages[phoneNumber].toFixed(2)));
+                    td.style.border = '1px solid black';
+                    td.style.backgroundColor = color(dataPoint.averages[phoneNumber])
+                }
             }
         }
         $("#phoneDescription").text("You are seeing the data from phone: " + phoneNumber);
         $("#visualize").append( tbl);
     }
+
+    function getDistinctXs(){
+        var xs = [];
+        for(var i = 0; i < data.length; i++){
+            if(xs.indexOf(data[i].x) == -1){
+                xs.push(data[i].x);
+            }
+        }
+        return xs
+    }
+
+    function getDistinctYs(){
+        var ys = [];
+        for(var i = 0; i < data.length; i++){
+            if(ys.indexOf(data[i].y) == -1){
+                ys.push(data[i].y);
+            }
+        }
+        return ys
+    }
+
+    function findDataPoint(x, y){
+        for(var i = 0; i < data.length; i++){
+            if(data[i].x == x && data[i].y == y){
+                return data[i]
+            }
+        }
+        return undefined;
+    }
+
+    function findDomain(){
+        var domain = [-130, -20]; // these are magic vaules based on max and min value of bluetooth RSSI's
+        for(var i = 0; i < data.length; i++){
+            for(var j = 0; j < 3; j++){
+                if(data[i].averages[j] > domain[0]){
+                    domain[0] = data[i].averages[j]
+                }
+                if(data[i].averages[j] < domain[1]){
+                    domain[1] = data[i].averages[j]
+                }
+            }
+        }
+        return domain
+    }
+
 </script>
 
 <div class="container">
@@ -129,8 +190,8 @@
         <span>
             <select id="Baseline">
                 <option value="">Choose baseline</option>
-                <% for(var i=1; i < numberOfBaselines + 1; i++) { %>
-                <option value="<%= i %>">Baseline <%= i %></option>
+                <% for(var i=0; i < numberOfBaselines; i++) { %>
+                <option value="<%= baselineRuns[i] %>">Baseline <%= baselineRuns[i] %></option>
                 <% } %>
             </select>
             <button type="button" class="btn btn-primary" onclick="placeDots()">Draw</button>

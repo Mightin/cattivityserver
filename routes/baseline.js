@@ -14,6 +14,7 @@ var locations = constants.locationsForBaseline;
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var numberOfBaselines = 0;
+    var baselineRuns = [];
 
     async.parallel([
             function(callback){
@@ -22,6 +23,7 @@ router.get('/', function(req, res, next) {
                         return callback(err);
                     }
                     numberOfBaselines = runs.length;
+                    baselineRuns = runs;
                     callback();
                 });
             }
@@ -30,6 +32,7 @@ router.get('/', function(req, res, next) {
             res.render('pages/baseline',
                 {
                     numberOfBaselines: numberOfBaselines,
+                    baselineRuns: baselineRuns,
                     phones: phonesForBaseline
                 }
             );
