@@ -84,8 +84,8 @@ var phonesForBaselineOLD = [
 var phonesForBaseline = [
     {place: "Top left", x: 0, y: 0},
     {place: "Top right", x: 500, y:0},
-    {place: "Bottom middle", x: 250, y:500}
-]
+    {place: "Bottom middle", x: 250, y:510}
+];
 
 var locationsForBaseline = [
     {place: "0,3", placeID: 0, x: 574, y: 182},
