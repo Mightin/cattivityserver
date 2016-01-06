@@ -49,10 +49,21 @@ router.get('/:baselinenr', function(req, res, next) {
         var dataPoint = {};
         dataPoint.place = "" + doc.x + "," + doc.y;
         dataPoint.averages = doc.averages;
-        dataPoint.phonesValues = doc.phonesValues;
         dataPoint.run = doc.run;
         dataPoint.x = doc.x;
         dataPoint.y = doc.y;
+        dataPoint.phoneValues = [];
+        dataPoint.phoneValues[0] = doc.phoneValues[0].values;
+        dataPoint.phoneValues[1] = doc.phoneValues[1].values;
+        dataPoint.phoneValues[2] = doc.phoneValues[2].values;
+        dataPoint.medians = [];
+        dataPoint.medians[0] = d3.median(doc.phoneValues[0].values);
+        dataPoint.medians[1] = d3.median(doc.phoneValues[1].values);
+        dataPoint.medians[2] = d3.median(doc.phoneValues[2].values);
+        dataPoint.deviations = [];
+        dataPoint.deviations[0] = d3.deviation(doc.phoneValues[0].values);
+        dataPoint.deviations[1] = d3.deviation(doc.phoneValues[1].values);
+        dataPoint.deviations[2] = d3.deviation(doc.phoneValues[2].values);
         data.push(dataPoint);
     }).on('error', function (err) {
         console.log(err);

@@ -2,7 +2,11 @@
 <html>
 <head>
     <title>Cattivity</title>
-
+    <style type="text/css">
+        p {
+            font-size: 16px  !important;
+        }
+    </style>
 </head>
 <body>
 <% include ../partials/header %>
@@ -44,7 +48,7 @@
                 $("#baselineDescription").text("Baseline not available, some error happened");
             } else {
                 data = dataFromServer;
-
+                $("#phoneDescription").text("In this run we measured ");
                 var svgContainer = d3.select(".floorplan-svg");
                 svgContainer.selectAll("*").remove();
 
@@ -106,7 +110,7 @@
 
         var tbl  = document.createElement('table');
         tbl.id = "visualizationTable";
-        tbl.style.width  = '100px';
+        //tbl.style.width  = '100px';
         tbl.style.border = '1px solid black';
 
         var domain = findDomain();
@@ -127,7 +131,23 @@
                     td.appendChild(document.createTextNode(" No data "));
                     td.style.border = '1px solid black';
                 } else {
-                    td.appendChild(document.createTextNode("Place: " + dataPoint.place + ", value: " + dataPoint.averages[phoneNumber].toFixed(2)));
+                    var para1 = document.createElement("p");
+                    var node1 = document.createTextNode("Place: " + dataPoint.place);
+                    para1.appendChild(node1);
+                    var para2 = document.createElement("p");
+                    var node2 = document.createTextNode("Value: " + dataPoint.averages[phoneNumber].toFixed(2));
+                    para2.appendChild(node2);
+                    var para3 = document.createElement("p");
+                    var node3 = document.createTextNode("Median " + dataPoint.medians[phoneNumber].toFixed(2));
+                    para3.appendChild(node3);
+                    var para4 = document.createElement("p");
+                    var node4 = document.createTextNode("Deviation: " + dataPoint.deviations[phoneNumber].toFixed(2));
+                    para4.appendChild(node4);
+
+                    td.appendChild(para1);
+                    td.appendChild(para2);
+                    td.appendChild(para3);
+                    td.appendChild(para4);
                     td.style.border = '1px solid black';
                     td.style.backgroundColor = color(dataPoint.averages[phoneNumber])
                 }
@@ -144,7 +164,7 @@
                 xs.push(data[i].x);
             }
         }
-        return xs
+        return xs.sort();
     }
 
     function getDistinctYs(){
@@ -154,7 +174,7 @@
                 ys.push(data[i].y);
             }
         }
-        return ys
+        return ys.sort();
     }
 
     function findDataPoint(x, y){
