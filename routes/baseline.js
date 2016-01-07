@@ -9,7 +9,6 @@ var Baseline = require('../models/baseline');
 var constants = require('../util/Constants.js')
 
 var phonesForBaseline = constants.phonesForBaseline;
-var locations = constants.locationsForBaseline;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -32,8 +31,7 @@ router.get('/', function(req, res, next) {
             res.render('pages/baseline',
                 {
                     numberOfBaselines: numberOfBaselines,
-                    baselineRuns: baselineRuns,
-                    phones: phonesForBaseline
+                    baselineRuns: baselineRuns
                 }
             );
         }
@@ -43,9 +41,11 @@ router.get('/', function(req, res, next) {
 /* GET baseline data. */
 router.get('/:baselinenr', function(req, res, next) {
     var baselinenr = req.params.baselinenr;
+    var phonesUsed;
     var data = [];
     var stream = Baseline.find({run: baselinenr}).stream();
     stream.on('data', function (doc) {
+        phonesUsed = doc.phonesUsed;
         var dataPoint = {};
         dataPoint.place = "" + doc.x + "," + doc.y;
         dataPoint.averages = doc.averages;
@@ -69,7 +69,12 @@ router.get('/:baselinenr', function(req, res, next) {
         console.log(err);
     }).on('close', function () {
         res.writeHeader(200, {"Content-Type": "application/json"});
-        res.write(JSON.stringify(data));
+        res.write(JSON.stringify(
+            {
+                "data": data,
+                "phones": phonesForBaseline[phonesUsed]
+            }
+        ));
         res.end();
     });
 });

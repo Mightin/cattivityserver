@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:visibility="http://www.w3.org/1999/xhtml">
 <head>
     <title>Cattivity</title>
     <style type="text/css">
@@ -11,29 +11,8 @@
 <body>
 <% include ../partials/header %>
 <script>
-    var phones = <%- JSON.stringify(phones) %>;
+    var phones = [];
     var data = [];
-
-    // place phones as red rectangles
-    function placePhones() {
-        var svgContainer = d3.select(".floorplan-svg");
-        svgContainer.selectAll()
-                .data(phones).enter()
-                .append("rect")
-                .attr("fill", "red")
-                .attr("width", 10)
-                .attr("height", 10)
-                .attr("x", function(e) { return e.x })
-                .attr("y", function(e) { return e.y });
-        $('svg rect').tipsy({
-            html: true,
-            title: function() {
-                var e = this.__data__;
-                var tip = "Location: " + e.place;
-                return tip;
-            }
-        });
-    }
 
     function placeDots(){
         removeOldPhoneVisualization();
@@ -47,11 +26,12 @@
             if (data == undefined) {
                 $("#baselineDescription").text("Baseline not available, some error happened");
             } else {
-                data = dataFromServer;
+                data = dataFromServer.data;
+                phones = dataFromServer.phones;
                 $("#baselineDescription").text("In this run we measured " + data.length + " points, with a minimum of " + data[0].phoneValues[0].length + " measurements pr point pr phone.");
+
                 var svgContainer = d3.select(".floorplan-svg");
                 svgContainer.selectAll("*").remove();
-
                 // place phones as red rectangles
                 svgContainer.selectAll()
                         .data(phones).enter()
@@ -69,10 +49,9 @@
                         return tip;
                     }
                 });
-
                 // place locations as blue circles
                 svgContainer.selectAll()
-                        .data(dataFromServer).enter()
+                        .data(data).enter()
                         .append("circle")
                         .attr("fill", "blue")
                         .attr("r", 10)
@@ -91,6 +70,23 @@
                         return tip;
                     }
                 });
+
+                // make dropdowns for visualization
+                var phoneOption0 = document.getElementById("phoneOption0");
+                phoneOption0.text = phones[0].place;
+                var phoneOption1 = document.getElementById("phoneOption1");
+                phoneOption1.text = phones[1].place;
+                var phoneOption2 = document.getElementById("phoneOption2");
+                phoneOption2.text = phones[2].place;
+
+                var phoneSelector = document.getElementById("phoneSelector");
+                phoneSelector.style.visibility = 'visible';
+
+                var attributeSelector = document.getElementById("attributeSelector");
+                attributeSelector.style.visibility = 'visible';
+
+                var visualizeButton = document.getElementById("visualizeButton");
+                visualizeButton.style.visibility = 'visible';
             }
         })
     }
@@ -98,7 +94,6 @@
     function removeOldPhoneVisualization() {
         var oldTbl = document.getElementById("visualizationTable");
         if (oldTbl) oldTbl.parentNode.removeChild(oldTbl);
-        $("#phoneDescription").text("Choose a phone to see the measured values visualized.");
     }
 
     function visualizePhoneData(){
@@ -108,9 +103,9 @@
         }
         removeOldPhoneVisualization();
 
-        var phone = $("#Phone option:selected");
+        var phone = $("#phoneSelector option:selected");
         var phoneNumber = phone.val();
-        var attribute = $("#Attribute option:selected");
+        var attribute = $("#attributeSelector option:selected");
         var attributeNumber = attribute.val();
 
 
@@ -251,26 +246,26 @@
             <button type="button" class="btn btn-primary" onclick="placeDots()">Draw</button>
         </span>
         <p id="baselineDescription"></p>
-        <svg class="floorplan-svg" height="520" width="510" style="background-color: lightgrey" onload="placePhones()">
+        <svg class="floorplan-svg" height="520" width="1010" style="background-color: lightgrey">
         </svg>
         <div id="visualize">
             <p id="phoneDescription">
                 Choose a phone to see the measured values visualized.
             </p>
-            <select id="Phone">
-                <option value="">Choose phone</option>
-                <% for(var i=0; i < phones.length; i++) { %>
-                <option value="<%= i %>"><%= phones[i].place %></option>
-                <% } %>
-            </select>
-            <select id="Attribute">
-                <option value="">Choose attribute</option>
-                <option value="0">Average</option>
-                <option value="1">Median</option>
-                <option value="2">Deviation</option>
-            </select>
             <span>
-                <button type="button" class="btn btn-primary" onclick="visualizePhoneData()">Visualize</button>
+                <select id="phoneSelector" style="visibility: hidden">
+                    <option value="">Choose attribute</option>
+                    <option id="phoneOption0" value="0"></option>
+                    <option id="phoneOption1" value="1"></option>
+                    <option id="phoneOption2" value="2"></option>
+                </select>
+                <select id="attributeSelector" style="visibility: hidden">
+                    <option value="">Choose attribute</option>
+                    <option value="0">Average</option>
+                    <option value="1">Median</option>
+                    <option value="2">Deviation</option>
+                </select>
+                <button id="visualizeButton" type="button" class="btn btn-primary" onclick="visualizePhoneData()" style="visibility: hidden">Visualize</button>
             </span>
             <div id="phoneTable">
                 <br>

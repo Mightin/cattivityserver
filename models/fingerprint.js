@@ -8,6 +8,8 @@ var fingerprintSchema = new Schema({
     placeID: Number,
     run: Number,
     averages: [Number],
+    medians: [Number],
+    deviations: [Number],
     phoneValues: [{values: [Number]}]
 });
 

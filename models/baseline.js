@@ -10,7 +10,8 @@ var baselineSchema = new Schema({
     averages: [Number],
     phoneValues: [{values: [Number]}],
     x: Number,
-    y: Number
+    y: Number,
+    phonesUsed: Number
 });
 
 // the schema is useless so far

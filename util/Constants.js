@@ -1,5 +1,5 @@
 /**
- * Created by Martin on 12-12-2015.
+ * Constant data
  */
 
 var phones = [
@@ -75,19 +75,20 @@ var locations = [
     {place: "Bedroom 3,0", placeID: 53, x: 807, y: 469}
 ];
 
-var phonesForBaselineOLD = [
-    {place: "TV", id: 0, x: 510, y: 207},
-    {place: "Comp", id: 1, x: 722, y: 131},
-    {place: "Corner", id: 2, x: 722, y: 330}
-];
-
 var phonesForBaseline = [
-    {place: "Top left", x: 0, y: 0},
-    {place: "Top right", x: 500, y:0},
-    {place: "Bottom middle", x: 250, y:510}
+    [
+        {place: "Top left", x: 0, y: 0},
+        {place: "Top right", x: 500, y:0},
+        {place: "Bottom middle", x: 250, y:510}
+    ],
+    [
+        {place: "TV", id: 0, x: 510, y: 207},
+        {place: "Comp", id: 1, x: 722, y: 131},
+        {place: "Corner", id: 2, x: 722, y: 330}
+    ]
 ];
 
-var locationsForBaseline = [
+var locationsForBaseline_phonesForBaseline_1 = [
     {place: "0,3", placeID: 0, x: 574, y: 182},
     {place: "1,3", placeID: 1, x: 623, y: 182},
     {place: "2,3", placeID: 2, x: 673, y: 182},
@@ -112,6 +113,5 @@ var locationsForBaseline = [
 module.exports = module.exports = {
     phones: phones,
     locations: locations,
-    phonesForBaseline: phonesForBaseline,
-    locationsForBaseline: locationsForBaseline
+    phonesForBaseline: phonesForBaseline
 };
