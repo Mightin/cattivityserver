@@ -41,11 +41,11 @@ router.get('/', function(req, res, next) {
 /* GET baseline data. */
 router.get('/:baselinenr', function(req, res, next) {
     var baselinenr = req.params.baselinenr;
-    var phonesUsed;
+    var setupUsed;
     var data = [];
     var stream = Baseline.find({run: baselinenr}).stream();
     stream.on('data', function (doc) {
-        phonesUsed = doc.phonesUsed;
+        setupUsed = doc.setupUsed;
         var dataPoint = {};
         dataPoint.place = "" + doc.x + "," + doc.y;
         dataPoint.averages = doc.averages;
@@ -72,7 +72,7 @@ router.get('/:baselinenr', function(req, res, next) {
         res.write(JSON.stringify(
             {
                 "data": data,
-                "phones": phonesForBaseline[phonesUsed]
+                "phones": phonesForBaseline[ setupUsed]
             }
         ));
         res.end();

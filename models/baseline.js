@@ -11,7 +11,7 @@ var baselineSchema = new Schema({
     phoneValues: [{values: [Number]}],
     x: Number,
     y: Number,
-    phonesUsed: Number
+    setupUsed: Number
 });
 
 // the schema is useless so far
