@@ -81,8 +81,8 @@ router.get('/:baselinenr', function(req, res, next) {
 
 /* POST home page. */
 router.post('/', function(req, res, next) {
-    if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('run') && req.body.hasOwnProperty('x') && req.body.hasOwnProperty('y') &&
-        check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.run).is("number") && check(req.body.x).is("number") && check(req.body.y).is("number") ){
+    if(req.body.hasOwnProperty('values') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('run') && req.body.hasOwnProperty('x') && req.body.hasOwnProperty('y') && req.body.hasOwnProperty('setupUsed') &&
+        check(req.body.values).is("array") && check(req.body.phoneID).is("number") && check(req.body.run).is("number") && check(req.body.x).is("number") && check(req.body.y).is("number") && check(req.body.setupUsed).is("number") ){
 
         postBaseline(req, res);
 
@@ -101,22 +101,29 @@ function postBaseline(req, res){
 
         // Element already exists
         if(element != null){
-            var newAvgs = element.averages;
-            newAvgs[index] = avg;
-            var newPhoneVals = element.phoneValues;
-            newPhoneVals[index].values = req.body.values;
-            Baseline.findOneAndUpdate({x: req.body.x, y: req.body.y, run: req.body.run},
-                {
-                    averages: newAvgs,
-                    phoneValues: newPhoneVals
-                },
-                function (err, element) {
-                    if (err) throw err;
-                    res.status(200);
-                    res.send('POST request to the homepage successful');
-                    console.log('Update of baseline was successful!');
-                }
-            );
+            if(req.body.setupUsed != element.setupUsed){
+                res.status(500);
+                res.send('Post to the homepage failed');
+                console.log('Wrong setupUsed');
+            } else {
+                var newAvgs = element.averages;
+                newAvgs[index] = avg;
+                var newPhoneVals = element.phoneValues;
+                newPhoneVals[index].values = req.body.values;
+                Baseline.findOneAndUpdate({x: req.body.x, y: req.body.y, run: req.body.run},
+                    {
+                        averages: newAvgs,
+                        phoneValues: newPhoneVals
+                    },
+                    function (err, element) {
+                        if (err) throw err;
+                        res.status(200);
+                        res.send('POST request to the homepage successful');
+                        console.log('Update of baseline was successful!');
+                    }
+                );
+            }
+
 
         } else {
             var newAvgs = [0,0,0];
@@ -129,7 +136,8 @@ function postBaseline(req, res){
                 averages: newAvgs,
                 phoneValues: phoneVals,
                 x: req.body.x,
-                y: req.body.y
+                y: req.body.y,
+                setupUsed: req.body.setupUsed
             });
 
             newBaseline.save(function (err) {
