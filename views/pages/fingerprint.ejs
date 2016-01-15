@@ -7,10 +7,10 @@
 <body>
 <% include ../partials/header %>
 <script>
-    var phones = <%- JSON.stringify(phones) %>;
+    var phones = [];
     var data = [];
 
-    // place phones as red rectangles
+    /*// place phones as red rectangles
     function placePhones() {
         var svgContainer = d3.select(".floorplan-svg");
         svgContainer.selectAll()
@@ -29,21 +29,21 @@
                 return tip;
             }
         });
-    }
+    }*/
 
     function placeDots(){
         var fingerprint = $("#Fingerprint option:selected");
         var fingerprintDescription = fingerprint.text();
         var fingerprintNumber = fingerprint.val();
-        $("#fingerprintDescription").text( fingerprintDescription);
 
         var url = "/fingerprint/" + fingerprintNumber;
         $.getJSON( url, function( dataFromServer ){
             if (data == undefined) {
                 $("#fingerprintDescription").text("Fingerpritns not available");
             } else {
-                $("#fingerprintDescription").text(fingerprintDescription);
-                data = dataFromServer;
+                data = dataFromServer.data;
+                phones = dataFromServer.phones;
+                $("#fingerprintDescription").text("In this run we measured " + data.length + " points, with a minimum of " + data[0].phoneValues[0].length + " measurements pr point pr phone.");
 
                 var svgContainer = d3.select(".floorplan-svg");
                 svgContainer.selectAll("*").remove();
@@ -72,7 +72,7 @@
 
                 // place locations as blue circles
                 svgContainer.selectAll()
-                        .data(dataFromServer).enter()
+                        .data(data).enter()
                         .append("circle")
                         .attr("fill", "blue")
                         .attr("r", 10)
@@ -91,8 +91,163 @@
                         return tip;
                     }
                 });
+                // make dropdowns for visualization
+                var phoneOption0 = document.getElementById("phoneOption0");
+                phoneOption0.text = phones[0].place;
+                var phoneOption1 = document.getElementById("phoneOption1");
+                phoneOption1.text = phones[1].place;
+                var phoneOption2 = document.getElementById("phoneOption2");
+                phoneOption2.text = phones[2].place;
+
+                var phoneSelector = document.getElementById("phoneSelector");
+                phoneSelector.style.visibility = 'visible';
+
+                var attributeSelector = document.getElementById("attributeSelector");
+                attributeSelector.style.visibility = 'visible';
+
+                var visualizeButton = document.getElementById("visualizeButton");
+                visualizeButton.style.visibility = 'visible';
             }
         })
+    }
+
+    function removeOldPhoneVisualization() {
+        var oldTbl = document.getElementById("visualizationTable");
+        if (oldTbl) oldTbl.parentNode.removeChild(oldTbl);
+    }
+
+    function visualizePhoneData(){
+        if(data.length == 0){
+            $("#phoneDescription").text("Please choose a baseline");
+            return;
+        }
+        removeOldPhoneVisualization();
+
+        var phone = $("#phoneSelector option:selected");
+        var phoneNumber = phone.val();
+        var attribute = $("#attributeSelector option:selected");
+        var attributeNumber = attribute.val();
+
+
+        var tbl  = document.createElement('table');
+        tbl.id = "visualizationTable";
+        //tbl.style.width  = '100px';
+        tbl.style.border = '1px solid black';
+
+        var domain = findDomain(phoneNumber, attributeNumber);
+
+        var color = d3.scale.linear()
+                .domain(domain)
+                .range(["rgb(91, 197, 145)", "rgb(249, 255, 248)"]);
+
+        var xs = getDistinctXs();
+        var ys = getDistinctYs();
+
+        for(var y = 0; y < ys.length; y++){
+            var tr = tbl.insertRow();
+            for(var x = 0; x < xs.length; x++){
+                var td = tr.insertCell();
+                td.style.border = '1px solid black';
+                var dataPoint = findDataPoint(xs[x], ys[y]);
+                if(dataPoint === undefined){
+                    var para = document.createElement("p");
+                    var node = document.createTextNode("No data");
+                    para.appendChild(node);
+                    td.appendChild(para);
+                } else {
+                    var para1 = document.createElement("p");
+                    var text1 = document.createTextNode("Place: " + dataPoint.place);
+                    para1.appendChild(text1);
+                    var para2 = document.createElement("p");
+                    if(attributeNumber == 0){
+                        var text = document.createTextNode("Average: " + dataPoint.averages[phoneNumber].toFixed(2));
+                        para2.appendChild(text);
+                        td.style.backgroundColor = color(dataPoint.averages[phoneNumber]);
+                    } else if(attributeNumber == 1){
+                        var text = document.createTextNode("Median " + dataPoint.medians[phoneNumber].toFixed(2));
+                        para2.appendChild(text);
+                        td.style.backgroundColor = color(dataPoint.medians[phoneNumber]);
+                    } else if(attributeNumber == 2){
+                        var text = document.createTextNode("Deviation: " + dataPoint.deviations[phoneNumber].toFixed(2));
+                        para2.appendChild(text);
+                        td.style.backgroundColor = color(dataPoint.deviations[phoneNumber]);
+                    } else {
+                        var text = document.createTextNode("No data");
+                        para2.appendChild(text);
+                    }
+                    td.appendChild(para1);
+                    td.appendChild(para2);
+                }
+            }
+        }
+        $("#phoneDescription").text("You are seeing the data from phone: " + phones[phoneNumber].place);
+        $("#visualize").append( tbl);
+    }
+
+    function getDistinctXs(){
+        var xs = [];
+        for(var i = 0; i < data.length; i++){
+            if(xs.indexOf(data[i].x) == -1){
+                xs.push(data[i].x);
+            }
+        }
+        return xs.sort();
+    }
+
+    function getDistinctYs(){
+        var ys = [];
+        for(var i = 0; i < data.length; i++){
+            if(ys.indexOf(data[i].y) == -1){
+                ys.push(data[i].y);
+            }
+        }
+        return ys.sort();
+    }
+
+    function findDataPoint(x, y){
+        for(var i = 0; i < data.length; i++){
+            if(data[i].x == x && data[i].y == y){
+                return data[i]
+            }
+        }
+        return undefined;
+    }
+
+    function findDomain(phoneNumber, attributeNumber){
+        if(attributeNumber == 0){
+            var domain = [-130, -20]; // these are magic vaules based on max and min value of bluetooth RSSI's
+            for(var i = 0; i < data.length; i++){
+                if(data[i].averages[phoneNumber] > domain[0]){
+                    domain[0] = data[i].averages[phoneNumber];
+                }
+                if(data[i].averages[phoneNumber] < domain[1]){
+                    domain[1] = data[i].averages[phoneNumber];
+                }
+            }
+            return domain;
+        } else if(attributeNumber == 1){
+            var domain = [-130, -20]; // these are magic vaules based on max and min value of bluetooth RSSI's
+            for(var i = 0; i < data.length; i++){
+                if(data[i].medians[phoneNumber] > domain[0]){
+                    domain[0] = data[i].medians[phoneNumber];
+                }
+                if(data[i].medians[phoneNumber] < domain[1]){
+                    domain[1] = data[i].medians[phoneNumber];
+                }
+            }
+            return domain;
+        } else {
+            var domain = [100, 0]; // based on values of deviations
+            for(var i = 0; i < data.length; i++){
+                if(data[i].deviations[phoneNumber] < domain[0]){
+                    domain[0] = data[i].deviations[phoneNumber];
+                }
+                if(data[i].deviations[phoneNumber] > domain[1]){
+                    domain[1] = data[i].deviations[phoneNumber];
+                }
+            }
+            return domain;
+        }
     }
 
 
@@ -112,8 +267,31 @@
             <button type="button" class="btn btn-primary" onclick="placeDots()">Draw</button>
         </span>
         <div id="fingerprintDescription"></div>
-        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)" onload="placePhones()" >
+        <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)">
         </svg>
+        <div id="visualize">
+            <p id="phoneDescription">
+                Choose a phone to see the measured values visualized.
+            </p>
+            <span>
+                <select id="phoneSelector" style="visibility: hidden">
+                    <option value="">Choose attribute</option>
+                    <option id="phoneOption0" value="0"></option>
+                    <option id="phoneOption1" value="1"></option>
+                    <option id="phoneOption2" value="2"></option>
+                </select>
+                <select id="attributeSelector" style="visibility: hidden">
+                    <option value="">Choose attribute</option>
+                    <option value="0">Average</option>
+                    <option value="1">Median</option>
+                    <option value="2">Deviation</option>
+                </select>
+                <button id="visualizeButton" type="button" class="btn btn-primary" onclick="visualizePhoneData()" style="visibility: hidden">Visualize</button>
+            </span>
+            <div id="phoneTable">
+                <br>
+            </div>
+        </div>
     </div>
 </div>
 </body>
