@@ -42,7 +42,7 @@ router.get('/:fingerprintnr', function(req, res, next) {
     var data = [];
     var stream = Fingerprint.find({run: fingerprintnr}).stream();
     stream.on('data', function (doc) {
-        var index = doc.placeID - 1;
+        var index = doc.placeID;
         var dataPoint = {};
         dataPoint.place = locations[index].place;
         dataPoint.x = locations[index].x;
