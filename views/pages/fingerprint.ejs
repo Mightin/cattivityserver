@@ -92,6 +92,9 @@
                     }
                 });
                 // make dropdowns for visualization
+                var phoneVisualization = document.getElementById("phoneVisualization");
+                phoneVisualization.style.visibility = 'visible';
+
                 var phoneOption0 = document.getElementById("phoneOption0");
                 phoneOption0.text = phones[0].place;
                 var phoneOption1 = document.getElementById("phoneOption1");
@@ -270,12 +273,12 @@
         <svg class="floorplan-svg" height="590" width="1000" style="background-image: url(images/floorplan.png)">
         </svg>
         <div id="visualize">
-            <p id="phoneDescription">
+            <p id="phoneVisualization" style="visibility: hidden">
                 Choose a phone to see the measured values visualized.
             </p>
             <span>
                 <select id="phoneSelector" style="visibility: hidden">
-                    <option value="">Choose attribute</option>
+                    <option value="">Choose phone</option>
                     <option id="phoneOption0" value="0"></option>
                     <option id="phoneOption1" value="1"></option>
                     <option id="phoneOption2" value="2"></option>
