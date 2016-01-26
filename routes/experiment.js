@@ -12,7 +12,7 @@ var Place = require('../models/place');
 var Queue = require('../util/queue');
 
 var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
-var maxDifference = 10000;
+var maxDifference = 1;
 var fingerPrintsAcquired = false;
 var fingerprints = [[]];
 
@@ -82,80 +82,59 @@ router.post('/', function(req, res, next) {
             var avgTime = d3.mean([data1.time, data2.time, data3.time]);
             var dataValues = [data1.value, data2.value, data3.value];
 
-            // find difference
-            var diff = maxTime - minTime;
-
-            // Point temporally within range
-
-            var bestPlaceID;
-            var bestDistance;
-            var distance;
+            var bestPlaceID_1;
+            var bestDistance_1;
+            var distance_1;
 
             // Algorithm 1
             for(var i = 0; i < fingerprints.length; i++){
-                bestPlaceID = 0;
-                bestDistance = 9999999999;
+                bestPlaceID_1 = 0;
+                bestDistance_1 = 9999999999;
                 for(var j = 0; j < fingerprints[i].length; j++){
                     // find distance
-                    distance = Math.sqrt(
-                        Math.pow((dataValues[0] - fingerprints[i][j].values[0]), 2) +
-                        Math.pow((dataValues[1] - fingerprints[i][j].values[1]), 2) +
-                        Math.pow((dataValues[2] - fingerprints[i][j].values[2]), 2)
+                    distance_1 = Math.sqrt(
+                        Math.pow((dataValues[0] - fingerprints[i][j].averages[0]), 2) +
+                        Math.pow((dataValues[1] - fingerprints[i][j].averages[1]), 2) +
+                        Math.pow((dataValues[2] - fingerprints[i][j].averages[2]), 2)
                     );
-                    if(distance < bestDistance){
-                        bestDistance = distance;
-                        bestPlaceID = fingerprints[i][j].placeID;
+                    if(distance_1 < bestDistance_1){
+                        bestDistance_1 = distance_1;
+                        bestPlaceID_1 = fingerprints[i][j].placeID;
                     }
                 }
-                savePlace(bestPlaceID, avgTime, dataValues, data1.run, (i+1), 1);
+                savePlace(bestPlaceID_1, avgTime, dataValues, data1.run, (i+1), 1);
             }
 
+
+            // find difference
+            var diff = maxTime - minTime;
             // Points temporally within range
             // Algorithm 2
+            var bestPlaceID_2;
+            var bestDistance_2;
+            var distance_2;
             if(diff <= maxDifference){
-                var bestPlaceID;
-                var bestDistance;
-                var distance;
                 for(var i = 0; i < fingerprints.length; i++){
-                    bestPlaceID = 0;
-                    bestDistance = 9999999999;
+                    bestPlaceID_2 = 0;
+                    bestDistance_2 = 9999999999;
                     for(var j = 0; j < fingerprints[i].length; j++){
                         // find distance
-                        distance = Math.sqrt(
-                            Math.pow((dataValues[0] - fingerprints[i][j].values[0]), 2) +
-                            Math.pow((dataValues[1] - fingerprints[i][j].values[1]), 2) +
-                            Math.pow((dataValues[2] - fingerprints[i][j].values[2]), 2)
+                        distance_2 = Math.sqrt(
+                            Math.pow((dataValues[0] - fingerprints[i][j].averages[0]), 2) +
+                            Math.pow((dataValues[1] - fingerprints[i][j].averages[1]), 2) +
+                            Math.pow((dataValues[2] - fingerprints[i][j].averages[2]), 2)
                         );
-                        if(distance < bestDistance){
-                            bestDistance = distance;
-                            bestPlaceID = fingerprints[i][j].placeID;
+                        if(distance_2 < bestDistance_2){
+                            bestDistance_2 = distance_2;
+                            bestPlaceID_2 = fingerprints[i][j].placeID;
                         }
                     }
-                    savePlace(bestPlaceID, avgTime, dataValues, data1.run, (i+1), 2);
+                    savePlace(bestPlaceID_2, avgTime, dataValues, data1.run, (i+1), 2);
                 }
             }
 
-            // Algorithm 3
-            for(var i = 0; i < fingerprints.length; i++){
-                bestPlaceID = 0;
-                bestDistance = 9999999999;
-                for(var j = 0; j < fingerprints[i].length; j++){
-                    // find distance
-                    distance = Math.sqrt(
-                        Math.pow((dataValues[0] - fingerprints[i][j].values[0]), 2) +
-                        Math.pow((dataValues[1] - fingerprints[i][j].values[1]), 2) +
-                        Math.pow((dataValues[2] - fingerprints[i][j].values[2]), 2)
-                    );
-                    if(distance < bestDistance){
-                        bestDistance = distance;
-                        bestPlaceID = fingerprints[i][j].placeID;
-                    }
-                }
-                savePlace(bestPlaceID, avgTime, dataValues, data1.run, (i+1), 3);
-            }
             // remove the temporally smallest element from the queues
             // if multiple first elements are smallest, remove all
-            console.log("minTime: " + minTime + " data1: " + data1.time);
             if(minTime == data1.time){
                 var del1 = valuesFromPhones[0].dequeue();
             } else if(minTime == data2.time){
@@ -216,9 +195,11 @@ function getFingerprints(){
         }
         var dataPoint = {};
         dataPoint.placeID = doc.placeID;
-        dataPoint.values = doc.values;
-        dataPoint.measuredValues = doc.measuredValues;
         dataPoint.run = doc.run;
+        dataPoint.averages = doc.averages;
+        dataPoint.medians = doc.medians;
+        dataPoint.deviations = doc.deviations;
+        dataPoint.phoneValues = doc.phoneValues;
         fingerprints[doc.run - 1].push(dataPoint);
     }).on('error', function (err) {
         console.log(err);
