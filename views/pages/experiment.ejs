@@ -20,14 +20,16 @@
             var experimentDescription = experiment.text();
             var experimentNumber = experiment.val();
 
-            var algorithmNumber = 1;
+            var algorithm = $("#Algorithm option:selected");
+            var algorithmDescription = algorithm.text();
+            var algorithmNumber = algorithm.val();
 
             var url = "/place/" + fingerprintNumber + "/" + experimentNumber + "/" + algorithmNumber;
             $.getJSON( url, function( data ) {
                 if(data == undefined){
                     $("#dataValue").text( "Combination not available.");
                 } else {
-                    $("#dataValue").text( fingerprintDescription + " and " + experimentDescription);
+                    $("#dataValue").text( fingerprintDescription + " and " + experimentDescription + " and " + algorithmDescription);
 
                     places = data;
                     minTime = places[0].time;
@@ -139,8 +141,14 @@
             <select id="Experiment">
                 <option value="">Choose experiment</option>
                 <% for(var i=1; i < counts.experiments + 1; i++) { %>
-                    <option value="<%= i %>">Experiment <%= i %></option>
+                <option value="<%= i %>">Experiment <%= i %></option>
                 <% } %>
+            </select>
+            <select id="Algorithm">
+                <option value="">Choose algorithm</option>
+                <option value="1">Algorithm 1</option>
+                <option value="2">Algorithm 2</option>
+                <option value="3">Algorithm 3</option>
             </select>
         </span>
         <span>

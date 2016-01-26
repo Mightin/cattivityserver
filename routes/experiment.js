@@ -12,7 +12,7 @@ var Place = require('../models/place');
 var Queue = require('../util/queue');
 
 var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
-var maxDifference = 1;
+var maxDifference = 1000;
 var fingerPrintsAcquired = false;
 var fingerprints = [[]];
 
@@ -77,10 +77,10 @@ router.post('/', function(req, res, next) {
             var data3 = valuesFromPhones[2].lookInto(0);
 
             // find min and max times
-            var minTime = d3.min([data1.time, data2.time, data3.time]);
-            var maxTime = d3.max([data1.time, data2.time, data3.time]);
-            var avgTime = d3.mean([data1.time, data2.time, data3.time]);
             var dataValues = [data1.value, data2.value, data3.value];
+            var minTime = d3.min(dataValues);
+            var maxTime = d3.max(dataValues);
+            var avgTime = d3.mean(dataValues);
 
             var bestPlaceID_1;
             var bestDistance_1;
@@ -105,11 +105,8 @@ router.post('/', function(req, res, next) {
                 savePlace(bestPlaceID_1, avgTime, dataValues, data1.run, (i+1), 1);
             }
 
-
-            // find difference
+            // Algorithm 2 - Points temporally within range
             var diff = maxTime - minTime;
-            // Points temporally within range
-            // Algorithm 2
             var bestPlaceID_2;
             var bestDistance_2;
             var distance_2;
@@ -131,6 +128,42 @@ router.post('/', function(req, res, next) {
                     }
                     savePlace(bestPlaceID_2, avgTime, dataValues, data1.run, (i+1), 2);
                 }
+            }
+
+            // Algorithm 3
+            var lastPlaceID = 99;
+            var lastI;
+            var lastJ;
+            var bestPlaceID_3;
+            var bestDistance_3;
+            var distance_3;
+            for(var i = 0; i < fingerprints.length; i++){
+                bestPlaceID_3 = 0;
+                bestDistance_3 = 9999999999;
+                for(var j = 0; j < fingerprints[i].length; j++){
+                    // find distance
+                    distance_3 = Math.sqrt(
+                        Math.pow((dataValues[0] - fingerprints[i][j].averages[0]), 2) +
+                        Math.pow((dataValues[1] - fingerprints[i][j].averages[1]), 2) +
+                        Math.pow((dataValues[2] - fingerprints[i][j].averages[2]), 2)
+                    );
+                    if(distance_3 < bestDistance_3){
+                        bestDistance_3 = distance_3;
+                        bestPlaceID_3 = fingerprints[i][j].placeID;
+                        lastI = i;
+                        lastJ = j;
+                    }
+                }
+                if(bestPlaceID_3 != lastPlaceID){
+                    if(dataValues[0] - fingerprints[lastI][lastJ].averages[0] < fingerprints[lastI][lastJ].deviations[0] &&
+                       dataValues[1] - fingerprints[lastI][lastJ].averages[1] < fingerprints[lastI][lastJ].deviations[1] &&
+                       dataValues[1] - fingerprints[lastI][lastJ].averages[1] < fingerprints[lastI][lastJ].deviations[1] ){
+                        bestPlaceID_3 = lastPlaceID;
+                    } else {
+                        lastPlaceID = bestPlaceID_3;
+                    }
+                }
+                savePlace(bestPlaceID_3, avgTime, dataValues, data1.run, (i+1), 3);
             }
 
             // remove the temporally smallest element from the queues
