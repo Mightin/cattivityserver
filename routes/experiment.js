@@ -27,7 +27,7 @@ router.get('/', function(req, res, next) {
                 });
             },
             function(callback) {
-                Place.distinct('run').exec(function (err, runs) {
+                Experiment.distinct('run').exec(function (err, runs) {
                     if (err) {
                         return callback(err);
                     }
