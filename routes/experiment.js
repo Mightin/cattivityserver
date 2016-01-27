@@ -154,25 +154,28 @@ router.post('/', function(req, res, next) {
                 for(var j = 0; j < fingerprints[i].length; j++){
                     // find distance
                     distance_3 = Math.sqrt(
-                        Math.pow((dataValues[0] - fingerprints[i][j].averages[0]), 2) +
-                        Math.pow((dataValues[1] - fingerprints[i][j].averages[1]), 2) +
-                        Math.pow((dataValues[2] - fingerprints[i][j].averages[2]), 2)
+                        Math.pow((dataValues[0] - fingerprints[lastI[i]][lastJ[i]].averages[0]), 2) +
+                        Math.pow((dataValues[1] - fingerprints[lastI[i]][lastJ[i]].averages[1]), 2) +
+                        Math.pow((dataValues[2] - fingerprints[lastI[i]][lastJ[i]].averages[2]), 2)
                     );
                     if(distance_3 < bestDistance_3){
+                        console.log("Distance");
                         bestDistance_3 = distance_3;
-                        bestPlaceID_3 = fingerprints[i][j].placeID;
+                        bestPlaceID_3 = fingerprints[lastI[i]][lastJ[i]].placeID;
                         lastI[i] = i;
                         lastJ[i] = j;
                     }
                 }
                 if(firstRun == true){
+                    console.log("First");
                     lastPlaceID[i] = bestPlaceID_3;
                     firstRun = false;
                 }
                 if(bestPlaceID_3 != lastPlaceID){
-                    if(dataValues[0] - fingerprints[lastI][lastJ].averages[0] < fingerprints[lastI][lastJ].deviations[0] &&
-                       dataValues[1] - fingerprints[lastI][lastJ].averages[1] < fingerprints[lastI][lastJ].deviations[1] &&
-                       dataValues[1] - fingerprints[lastI][lastJ].averages[1] < fingerprints[lastI][lastJ].deviations[1] ){
+                    console.log("new place");
+                    if(dataValues[0] - fingerprints[lastI[i]][lastJ[i]].averages[0] < fingerprints[lastI[i]][lastJ[i]].deviations[0] &&
+                       dataValues[1] - fingerprints[lastI[i]][lastJ[i]].averages[1] < fingerprints[lastI[i]][lastJ[i]].deviations[1] &&
+                       dataValues[1] - fingerprints[lastI[i]][lastJ[i]].averages[1] < fingerprints[lastI[i]][lastJ[i]].deviations[1] ){
                         bestPlaceID_3 = lastPlaceID[i];
                     } else {
                         lastPlaceID[i] = bestPlaceID_3;
