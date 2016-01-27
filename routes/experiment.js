@@ -12,7 +12,7 @@ var Place = require('../models/place');
 var Queue = require('../util/queue');
 
 var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
-var maxDifference = 1000;
+var maxDifference = 10000;
 var fingerPrintsAcquired = false;
 var fingerprints = [[]];
 
@@ -78,9 +78,9 @@ router.post('/', function(req, res, next) {
 
             // find min and max times
             var dataValues = [data1.value, data2.value, data3.value];
-            var minTime = d3.min(dataValues);
-            var maxTime = d3.max(dataValues);
-            var avgTime = d3.mean(dataValues);
+            var minTime = d3.min([data1.time, data2.time, data3.time]);
+            var maxTime = d3.max([data1.time, data2.time, data3.time]);
+            var avgTime = d3.mean([data1.time, data2.time, data3.time]);
 
             var bestPlaceID_1;
             var bestDistance_1;
@@ -134,6 +134,7 @@ router.post('/', function(req, res, next) {
             var lastPlaceID = 99;
             var lastI;
             var lastJ;
+            var firstRun = true;
             var bestPlaceID_3;
             var bestDistance_3;
             var distance_3;
@@ -153,6 +154,10 @@ router.post('/', function(req, res, next) {
                         lastI = i;
                         lastJ = j;
                     }
+                }
+                if(firstRun == true){
+                    lastPlaceID = bestPlaceID_3;
+                    firstRun = false;
                 }
                 if(bestPlaceID_3 != lastPlaceID){
                     if(dataValues[0] - fingerprints[lastI][lastJ].averages[0] < fingerprints[lastI][lastJ].deviations[0] &&
