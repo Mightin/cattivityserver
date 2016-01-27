@@ -50,6 +50,8 @@ var maxDifference = 10000;
 var fingerPrintsAcquired = false;
 var fingerprints = [[]];
 var lastPlaceID = [99, 99, 99, 99, 99];
+var lastI = [0, 0, 0, 0, 0];
+var lastJ = [0, 0, 0, 0, 0];
 var lastRun = 0;
 
 /* POST home page. */
@@ -69,6 +71,8 @@ router.post('/', function(req, res, next) {
             lastRun = item.run;
             valuesFromPhones = [new Queue(), new Queue(), new Queue()];
             lastPlaceID = [99, 99, 99, 99, 99];
+            lastI = [0, 0, 0, 0, 0];
+            lastJ = [0, 0, 0, 0, 0];
         }
 
         var index = item.phoneID;
@@ -80,7 +84,6 @@ router.post('/', function(req, res, next) {
             res.send('POST request to the homepage successful');
 
         } else { // there is data from each phone
-            console.log("larws");
             // get the first element from each phones queue
             var data1 = valuesFromPhones[0].lookInto(0);
             var data2 = valuesFromPhones[1].lookInto(0);
@@ -141,8 +144,6 @@ router.post('/', function(req, res, next) {
             }
 
             // Algorithm 3
-            var lastI = [];
-            var lastJ = [];
             var firstRun = true;
             var bestPlaceID_3;
             var bestDistance_3;
