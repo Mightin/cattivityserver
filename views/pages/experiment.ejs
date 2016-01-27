@@ -10,6 +10,7 @@
         var dotToPlaceIndex = 0;
         var iFrequency = 200; // expressed in miliseconds
         var myInterval = 0;
+        var colorCounter = 0;
 
         function setData(){
             var fingerprint = $("#Fingerprint option:selected");
@@ -67,7 +68,11 @@
             } else {
                 if((places[dotToPlaceIndex + 1].time - minTime) <= timeToPlace){
                     dotToPlaceIndex = dotToPlaceIndex + 1;
+                    colorCounter++;
                 }
+                var colors = ["red", "blue"];
+                var color = colors[colorCounter % 2];
+
                 var svgContainer = d3.select(".floorplan-svg");
                 svgContainer.selectAll("*").remove();
                 var dot = [places[dotToPlaceIndex]];
@@ -75,7 +80,7 @@
                 svgContainer.selectAll()
                         .data(dot).enter()
                         .append("circle")
-                        .attr("fill", "blue")
+                        .attr("fill", color)
                         .attr("r", 10)
                         .attr("cx", function(d){return d.x})
                         .attr("cy", function(d){return d.y});
@@ -130,6 +135,7 @@
         <p>
             This is visualization of the experiments we have done.
             You can choose which experiment you want to see, and which fingerprints to calculate the positions from.
+            Colour changes indicate a new point.
         </p>
         <span>
             <select id="Fingerprint">

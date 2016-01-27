@@ -49,6 +49,7 @@ var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
 var maxDifference = 10000;
 var fingerPrintsAcquired = false;
 var fingerprints = [[]];
+var lastPlaceID = [99, 99, 99, 99, 99];
 var lastRun = 0;
 
 /* POST home page. */
@@ -67,6 +68,7 @@ router.post('/', function(req, res, next) {
         if(item.run != lastRun){
             lastRun = item.run;
             valuesFromPhones = [new Queue(), new Queue(), new Queue()];
+            lastPlaceID = [99, 99, 99, 99, 99];
         }
 
         var index = item.phoneID;
@@ -139,9 +141,8 @@ router.post('/', function(req, res, next) {
             }
 
             // Algorithm 3
-            var lastPlaceID = 99;
-            var lastI;
-            var lastJ;
+            var lastI = [];
+            var lastJ = [];
             var firstRun = true;
             var bestPlaceID_3;
             var bestDistance_3;
@@ -159,21 +160,21 @@ router.post('/', function(req, res, next) {
                     if(distance_3 < bestDistance_3){
                         bestDistance_3 = distance_3;
                         bestPlaceID_3 = fingerprints[i][j].placeID;
-                        lastI = i;
-                        lastJ = j;
+                        lastI[i] = i;
+                        lastJ[i] = j;
                     }
                 }
                 if(firstRun == true){
-                    lastPlaceID = bestPlaceID_3;
+                    lastPlaceID[i] = bestPlaceID_3;
                     firstRun = false;
                 }
                 if(bestPlaceID_3 != lastPlaceID){
                     if(dataValues[0] - fingerprints[lastI][lastJ].averages[0] < fingerprints[lastI][lastJ].deviations[0] &&
                        dataValues[1] - fingerprints[lastI][lastJ].averages[1] < fingerprints[lastI][lastJ].deviations[1] &&
                        dataValues[1] - fingerprints[lastI][lastJ].averages[1] < fingerprints[lastI][lastJ].deviations[1] ){
-                        bestPlaceID_3 = lastPlaceID;
+                        bestPlaceID_3 = lastPlaceID[i];
                     } else {
-                        lastPlaceID = bestPlaceID_3;
+                        lastPlaceID[i] = bestPlaceID_3;
                     }
                 }
                 savePlace(bestPlaceID_3, avgTime, dataValues, data1.run, (i+1), 3);
