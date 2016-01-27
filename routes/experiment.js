@@ -63,10 +63,10 @@ router.post('/', function(req, res, next) {
         }
         // save the data
         saveExperiment(item);
-
+        console.log("Run " + item.run);
         if(item.run != lastRun){
             lastRun = item.run;
-            var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
+            valuesFromPhones = [new Queue(), new Queue(), new Queue()];
         }
 
         var index = item.phoneID;
@@ -78,6 +78,7 @@ router.post('/', function(req, res, next) {
             res.send('POST request to the homepage successful');
 
         } else { // there is data from each phone
+            console.log("larws");
             // get the first element from each phones queue
             var data1 = valuesFromPhones[0].lookInto(0);
             var data2 = valuesFromPhones[1].lookInto(0);
