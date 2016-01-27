@@ -26,8 +26,8 @@ router.get('/:madeFromRun/:experimentnr/:algorithmnr', function(req, res, next) 
         dataPoint.madeFromRun = doc.madeFromRun;
         dataPoint.run = doc.run;
         dataPoint.algortim = doc.algorithm;
-        dataPoint.x = locations[placeID - 1].x;
-        dataPoint.y = locations[placeID - 1].y;
+        dataPoint.x = locations[placeID].x;
+        dataPoint.y = locations[placeID].y;
         places.push(dataPoint);
     }).on('error', function (err) {
         console.log(err);
