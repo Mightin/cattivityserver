@@ -53,6 +53,7 @@ var lastPlaceID = [99, 99, 99, 99, 99];
 var lastI = [0, 0, 0, 0, 0];
 var lastJ = [0, 0, 0, 0, 0];
 var lastRun = 0;
+var firstRun = true;
 
 /* POST home page. */
 router.post('/', function(req, res, next) {
@@ -66,13 +67,13 @@ router.post('/', function(req, res, next) {
         }
         // save the data
         saveExperiment(item);
-        console.log("Run " + item.run);
         if(item.run != lastRun){
             lastRun = item.run;
             valuesFromPhones = [new Queue(), new Queue(), new Queue()];
             lastPlaceID = [99, 99, 99, 99, 99];
             lastI = [0, 0, 0, 0, 0];
             lastJ = [0, 0, 0, 0, 0];
+            firstRun = true;
         }
 
         var index = item.phoneID;
@@ -144,7 +145,6 @@ router.post('/', function(req, res, next) {
             }
 
             // Algorithm 3
-            var firstRun = true;
             var bestPlaceID_3;
             var bestDistance_3;
             var distance_3;
@@ -231,7 +231,7 @@ function savePlace(placeID, time, dataValues, run, fingerprintNr, algorithm){
             console.log(err);
             throw err;
         }
-        console.log('New place have been calculated. Place: ' + placeID + " made from run: " + run + " and algorithm: " + algorithm);
+        console.log('New place have been calculated. Place: ' + placeID + " made from run: " + fingerprintNr + " and algorithm: " + algorithm);
     });
 }
 
