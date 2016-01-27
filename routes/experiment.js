@@ -11,11 +11,6 @@ var Place = require('../models/place');
 
 var Queue = require('../util/queue');
 
-var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
-var maxDifference = 10000;
-var fingerPrintsAcquired = false;
-var fingerprints = [[]];
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var fingerprints = 0;
@@ -32,7 +27,7 @@ router.get('/', function(req, res, next) {
                 });
             },
             function(callback) {
-                Experiment.distinct('run').exec(function (err, runs) {
+                Place.distinct('run').exec(function (err, runs) {
                     if (err) {
                         return callback(err);
                     }
@@ -50,6 +45,12 @@ router.get('/', function(req, res, next) {
     );
 });
 
+var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
+var maxDifference = 10000;
+var fingerPrintsAcquired = false;
+var fingerprints = [[]];
+var lastRun = 0;
+
 /* POST home page. */
 router.post('/', function(req, res, next) {
     if(req.body.hasOwnProperty('value') && req.body.hasOwnProperty('phoneID') && req.body.hasOwnProperty('time') && req.body.hasOwnProperty('run') &&
@@ -62,6 +63,12 @@ router.post('/', function(req, res, next) {
         }
         // save the data
         saveExperiment(item);
+
+        if(item.run != lastRun){
+            lastRun = item.run;
+            var valuesFromPhones = [new Queue(), new Queue(), new Queue()];
+        }
+
         var index = item.phoneID;
         // store the item, at the correct phone
         valuesFromPhones[index].enqueue(item);
