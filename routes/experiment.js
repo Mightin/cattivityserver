@@ -159,7 +159,6 @@ router.post('/', function(req, res, next) {
                         Math.pow((dataValues[2] - fingerprints[i][j].averages[2]), 2)
                     );
                     if(distance_3 < bestDistance_3){
-                        console.log("Distance");
                         bestDistance_3 = distance_3;
                         bestPlaceID_3 = fingerprints[i][j].placeID;
                         lastI[i] = i;
@@ -167,12 +166,10 @@ router.post('/', function(req, res, next) {
                     }
                 }
                 if(firstRun == true){
-                    console.log("First");
                     lastPlaceID[i] = bestPlaceID_3;
                     firstRun = false;
                 }
                 if(bestPlaceID_3 != lastPlaceID){
-                    console.log("new place");
                     if(dataValues[0] - fingerprints[lastI[i]][lastJ[i]].averages[0] < fingerprints[lastI[i]][lastJ[i]].deviations[0] &&
                        dataValues[1] - fingerprints[lastI[i]][lastJ[i]].averages[1] < fingerprints[lastI[i]][lastJ[i]].deviations[1] &&
                        dataValues[1] - fingerprints[lastI[i]][lastJ[i]].averages[1] < fingerprints[lastI[i]][lastJ[i]].deviations[1] ){
